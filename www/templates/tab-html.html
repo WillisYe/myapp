@@ -1,0 +1,13 @@
+<ion-view view-title="HTML">
+  <ion-header-bar align-title="center" class="bar-positive">
+    <div class="h1 title login-title" edit-document-title title="HTML">HTML</div>
+  </ion-header-bar>
+  <ion-content>
+    <div class="card padding">
+      <h4>前端网址导航</h4>
+      <div class="nav-box">
+        <a ng-href="{{::item.url}}" class="padding" ng-repeat="item in navs">{{::item.name}}</a>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

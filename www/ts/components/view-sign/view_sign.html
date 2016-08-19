@@ -1,0 +1,17 @@
+<div class="dm-date-picker-c">
+    <p class="title">{{::year}}年{{month < 10 ? "0"+month : month}}月{{day < 10 ? "0"+day : day}}日</p>
+    <div class="row-date">
+        <div class="date-item week">日</div>
+        <div class="date-item week">一</div>
+        <div class="date-item week">二</div>
+        <div class="date-item week">三</div>
+        <div class="date-item week">四</div>
+        <div class="date-item week">五</div>
+        <div class="date-item week">六</div>
+    </div>
+    <div class="row-date" ng-repeat="seven in allDay">
+        <div class="date-item" ng-repeat="day in seven" >
+            <span class="{{::day.sign ? 'sign' : ''}}" style="{{::(day.day == nowDay ? 'font-weight:bold;' : '')}}">{{::(day.day == nowDay ? '今' : day.day)}}</span>
+        </div>
+    </div>
+</div>

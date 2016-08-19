@@ -1,0 +1,82 @@
+<ion-view view-title="CSS">
+    <ion-header-bar align-title="center" class="bar-positive">
+        <div class="h1 title">CSS</div>
+        <a href="#/share" class="button ion-android-share-alt"></a>
+    </ion-header-bar>
+    <ion-content>
+        <ion-slide-box class="banner-index" does-continue="true" auto-play="true">
+            <ion-slide ng-repeat="banner in banners track by $index">
+                <a class="box" ng-href="{{banner.url}}"><img class="full-image block" ng-src="{{banner.pic}}"></a>
+            </ion-slide>            
+        </ion-slide-box>
+        <div class="row">
+            <div class="col">
+                <a href="#/video" class="card m-0 item-index">
+                    <img src="img/shipinkaijiang.png" alt="" />
+                    <div class="txt1">視頻開獎</div>
+                    <div class="txt2">在線直播開獎實況</div>
+                </a>
+            </div>
+            <div class="col">
+                <a href="#/images" class="card m-0 item-index">
+                    <img src="img/liuhetuku.png" alt="" />
+                    <div class="txt1">六合圖庫</div>
+                    <div class="txt2">最新最快六合圖庫</div>
+                </a>
+            </div>
+            <div class="col">
+                <a href="#/money" class="card m-0 item-index new">
+                    <img src="img/zhuanqianmiji.png" alt="" />
+                    <div class="txt1">賺錢秘籍</div>
+                    <div class="txt2">您身邊的賺錢專家</div>
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a href="#/market" class="card m-0 item-index hot">
+                    <img src="img/taoliaoshichang.png" alt="" />
+                    <div class="txt1">淘料市場</div>
+                    <div class="txt2">精準好料 贏了再贏</div>
+                </a>
+            </div>
+            <div class="col">
+                <a href="#/history" class="card m-0 item-index">
+                    <img src="img/kaijianglishi.png" alt="" />
+                    <div class="txt1">歷史開獎</div>
+                    <div class="txt2">所有彩期開獎記錄</div>
+                </a>
+            </div>
+            <div class="col">
+                <a href="#/info" class="card m-0 item-index">
+                    <img src="img/ziliaotongji.png" alt="" />
+                    <div class="txt1">資料統計</div>
+                    <div class="txt2">統計是最好的參考</div>
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a href="#/house" class="card m-0 item-index">
+                    <img src="img/caiyoujiaoliu.png" alt="" />
+                    <div class="txt1">彩友交流</div>
+                    <div class="txt2">專家就在您的身邊</div>
+                </a>
+            </div>
+            <div class="col">
+                <a href="#/imagesb" class="card m-0 item-index">
+                    <img src="img/youmotuku.png" alt="" />
+                    <div class="txt1">幽默猜圖</div>
+                    <div class="txt2">看圖猜字 賺錢有趣</div>
+                </a>
+            </div>
+            <div class="col">
+                <a href="#/box" class="card m-0 item-index">
+                    <img src="img/gongjubaoxiang.png" alt="" />
+                    <div class="txt1">工具寶箱</div>
+                    <div class="txt2">贏錢工具盡在寶箱</div>
+                </a>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>
