@@ -1,0 +1,6 @@
+<svg width="200" height="250" version="1.1" xmlns="http://www.w3.org/2000/svg">
+
+    <path d="M95 100 L100 120 L115 120 L105 130 L110 145 L95 135 L80 145 L85 130 L75 120 L90 120 L95 100 L0 0 L0 250 L200 250 L200 0 L0 0" fill="cyan" />
+
+    <!-- <polygon points="95 100 100 120 115 120 105 130 110 145 95 135 80 145 85 130 75 120 L90 120" fill="transparent" stroke="red" stroke-width="5" /> -->
+</svg>

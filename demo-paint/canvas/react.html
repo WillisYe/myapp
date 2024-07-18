@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    drawRectangle({ x: 50, y: 300 }, { x: 250, y: 300 }, 20)
+
+    function drawRectangle(point1, point2, sideLength) {
+      var [x1, y1, x2, y2] = [point1.x, point1.y, point2.x, point2.y]
+      var canvas = document.createElement('canvas');
+      canvas.width = 400;
+      canvas.height = 400;
+      document.body.appendChild(canvas);
+      var ctx = canvas.getContext('2d');
+
+      // 计算矩形的另外两个顶点坐标
+      var dx = x2 - x1;
+      var dy = y2 - y1;
+      var length = Math.sqrt(dx * dx + dy * dy);
+      var angle = Math.atan2(dy, dx);
+      var x3 = x1 + sideLength * Math.cos(angle - Math.PI / 2);
+      var y3 = y1 + sideLength * Math.sin(angle - Math.PI / 2);
+      var x4 = x2 + sideLength * Math.cos(angle - Math.PI / 2);
+      var y4 = y2 + sideLength * Math.sin(angle - Math.PI / 2);
+
+      // 绘制矩形
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.lineTo(x4, y4);
+      ctx.lineTo(x3, y3);
+      ctx.closePath();
+      ctx.stroke();
+    }
+  </script>
+</body>
+
+</html>

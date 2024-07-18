@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    body {
+      background: linear-gradient(90deg, #03224e 0%, #011030 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .logo {
+      width: 450px;
+      height: 450px;
+      transform-style: preserve-3d;
+      position: relative;
+    }
+
+    .logo::after {
+      content: "";
+      width: 100%;
+      height: 100%;
+      background: url("https://i.postimg.cc/Sxn1cPT8/logo.png") no-repeat;
+      background-size: 100% 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      animation: douce 2s infinite linear;
+    }
+
+    @keyframes douce {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    .line {
+      position: absolute;
+      width: 288px;
+      height: 288px;
+      left: 50%;
+      bottom: 25px;
+      border-radius: 50%;
+      border: 3px solid #4d7ea2;
+      transform: rotateX(66deg) rotateY(0) rotateZ(0) translate(-50%, 0);
+    }
+
+    @property --angle {
+      syntax: "<angle>";
+      inherits: false;
+      initial-value: 0deg;
+    }
+
+    .line:after {
+      --angle: 0deg;
+      content: '';
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background-color: #5fffa5;
+      position: absolute;
+      top: calc(288px / 2 * sin(var(--angle)) + 288px / 2 - 7px);
+      left: calc(288px / 2 * cos(var(--angle)) + 288px / 2 - 7px);
+      animation: round 10s linear infinite;
+      transform-style: flat;
+    }
+
+    @keyframes round {
+      0% {
+        --angle: 0turn;
+        /* translate: -50% 0px; */
+      }
+
+      50% {
+        --angle: 1turn;
+        /* translate: -50% -250px; */
+      }
+
+      100% {
+        --angle: 2turn;
+        /* translate: -50% -500px; */
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="logo">
+    <div class="line"></div>
+  </div>
+</body>
+
+</html>

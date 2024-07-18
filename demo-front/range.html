@@ -1,0 +1,21 @@
+<input type="range" min="0" max="100" step="1" id="slider">
+
+<script>
+    var slider = document.getElementById("slider");
+
+    // 设置滑块的范围选择为10-80
+    slider.min = 10;
+    slider.max = 80;
+
+    // 监听滑块值的变化，只保留在设定范围内的值
+    slider.addEventListener("input", function() {
+        if (slider.value < 10) {
+            slider.value = 10;
+        } else if (slider.value > 80) {
+            slider.value = 80;
+        }
+
+        var selectedRange = slider.value;
+        console.log(selectedRange);
+    });
+</script>

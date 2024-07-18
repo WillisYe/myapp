@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tree Chart</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <div id="tree-chart"></div>
+  <script>
+    const data = [{
+      label: '一级 1',
+      children: [{
+        label: '二级 1-1',
+        children: [{
+          label: '三级 1-1-1'
+        }]
+      }]
+    }, {
+      label: '一级 2',
+      children: [{
+        label: '二级 2-1',
+        children: [{
+          label: '三级 2-1-1'
+        }]
+      }, {
+        label: '二级 2-2',
+        children: [{
+          label: '三级 2-2-1'
+        }]
+      }]
+    }, {
+      label: '一级 3',
+      children: [{
+        label: '二级 3-1',
+        children: [{
+          label: '三级 3-1-1'
+        }]
+      }, {
+        label: '二级 3-2',
+        children: [{
+          label: '三级 3-2-1'
+        }]
+      }]
+    }];
+
+    const width = 600;
+    const height = 400;
+
+    const svg = d3.select("#tree-chart")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .append("g")
+      .attr("transform", "translate(50,50)");
+
+    const treeLayout = d3.tree().size([width - 100, height - 100]);
+    const rootNode = d3.hierarchy(data[0]);
+    treeLayout(rootNode);
+
+    const links = svg.selectAll(".link")
+      .data(rootNode.links())
+      .enter()
+      .append("path")
+      .attr("class", "link")
+      .attr("d", d3.linkHorizontal()
+        .x(d => d.y)
+        .y(d => d.x));
+
+    const nodes = svg.selectAll(".node")
+      .data(rootNode.descendants())
+      .enter()
+      .append("g")
+      .attr("class", "node")
+      .attr("transform", d => `translate(${d.y},${d.x})`);
+
+    nodes.append("circle").attr("r", 5);
+    nodes.append("text")
+      .text(d => d.data.label)
+      .attr("dy", 5)
+      .attr("x", d => d.children ? -20 : 20)
+      .style("text-anchor", d => d.children ? "end" : "start");
+  </script>
+</body>
+</html>

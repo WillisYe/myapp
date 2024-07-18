@@ -1,0 +1,46 @@
+<?xml version="1.0" standalone="no"?>
+<svg width="200" height="200" version="1.1" xmlns="http://www.w3.org/2000/svg">
+
+  <path
+    d="M95 100 L100 120 L115 120 L105 130 L110 145 L95 135 L80 145 L85 130 L75 120 L90 120 L95 100 L0 0 L0 200 L200 200 L200 0 L0 0"
+    fill="cyan" />
+
+  <polygon points="50 160 55 180 70 180 60 190 65 205 50 195 35 205 40 190 30 180 45 180" fill="transparent"
+    stroke="red" stroke-width="5" />
+</svg>
+
+<script>
+  function setPosition(x, y) {
+    var polygon = document.querySelector('polygon')
+    var points = polygon.getAttribute('points')
+    console.log(points)
+    var arr = points.split(' ').filter(item => item)
+    for (let index = 0; index < arr.length; index++) {
+      const item = arr[index];
+      if (index % 2 == 0) {
+        arr[index] = +item + x
+      } else {
+        arr[index] = +item + y
+      }
+    }
+    polygon.setAttribute('points', arr.join(' '))
+  }
+  setPosition(45, -60)
+
+  function getStarPoints(r) {
+    var points = [];
+    for (var k = 0; k < 5; k++) {
+      var x = r * Math.cos(2 * Math.PI * k / 5);
+      var y = r * Math.sin(2 * Math.PI * k / 5);
+      var x1 = r * Math.cos(2 * Math.PI * 2 * k / 5);
+      var y1 = r * Math.sin(2 * Math.PI * 2 * k / 5);
+      points.push({ x: x, y: y });
+      points.push({ x: x1, y: y1 });
+    }
+    return points;
+  }
+
+  console.log(getStarPoints(100))
+
+
+</script>

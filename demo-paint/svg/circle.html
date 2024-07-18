@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>JS Bin</title>
+  <style lang="">
+    * {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas width="350" height="350" id="myCanvas"></canvas>
+  <script>
+    let canvas = document.getElementById('myCanvas');
+    let ctx = canvas.getContext('2d');
+
+    let radius = Math.min(canvas.width, canvas.height) / 2;
+    let stripes = 26;  // 条纹的数量
+    let angle = 2 * Math.PI / stripes
+
+    ctx.translate(canvas.width / 2, canvas.height / 2);  // 将原点移动到画布的中心
+
+    for (let j = radius; j > 0; j--) {
+      var differ = (j / 30)
+      var n = Math.log2(j) * 4
+      var roundedNum = Math.round(n)
+      var bool = Math.abs(n - roundedNum) < 0.2
+      if (bool) {
+        // differ = (j + 30 * roundedNum) / 30
+      }
+      for (let i = 0; i < stripes; i++) {
+        ctx.beginPath();
+        ctx.arc(0, 0, j, (i - differ) * angle, (i + 1 - differ) * angle);
+        ctx.lineTo(0, 0);
+        ctx.closePath();
+
+        // 根据 i 的奇偶性选择颜色
+        ctx.fillStyle = i % 2 == 0 ? 'black' : 'white';
+        ctx.fill();
+      }
+    }
+
+    function isPowerOfTwo(n) {
+      return n > 0 && (n & (n - 1)) === 0;
+    }
+  </script>
+</body>
+
+</html>

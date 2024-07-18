@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="UTF-8">
+  <title>CSS Houdini Corner Shape Demo By Yisi</title>
+  <link rel="stylesheet" href="../src/github-fork.css">
+  <style>
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
+  #tips {
+    color: #fff;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  a {
+    color: #fff;
+  }
+
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: arial, sans-serif;
+    background-color: #2b2b2b;
+  }
+
+  main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 80px;
+  }
+
+
+  .container {
+    position: relative;
+    -webkit-filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.56));
+    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.56));
+  }
+
+  .box {
+    width: 300px;
+    height: 300px;
+    overflow: hidden;
+    resize: both;
+    text-align: center;
+    position: relative;
+    background-image: linear-gradient(180deg, #FDF5DD 5%, #F6D8B3 60%, #FFFFFF 80%);
+    border-radius: 5px;
+    padding: 20px;
+  }
+
+  .box h1 {
+    color: #8B572A;
+    font-size: 22px;
+    font-weight: normal;
+  }
+
+  .box h2 {
+    font-size: 14px;
+    color: #8B572A;
+    font-weight: normal;
+    position: absolute;
+    left: 0;
+    top: calc(var(--y) + var(--h-radius));
+    transform: translateY(-50%);
+    width: 100%;
+    transition: top var(--time);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .box > h2:before,
+  .box > h2:after {
+    content: '';
+    flex: 1;
+    border: 1px dashed #8B572A;
+    border: 0.5px dotted #8B572A;
+  }
+
+  .box > h2:before {
+    margin-right: 10px;
+  }
+
+  .box > h2:after {
+    margin-left: 10px;
+  }
+
+  :root {
+    --y: 80px;
+    --h-radius: 10px;
+    --time: .3s;
+  }
+
+  .box {
+    /* background-image: paint(corner); */
+    -webkit-mask-image: paint(corner);
+    mask-image: paint(corner);
+    --offset-half: -1px; /* 圆心偏移 */
+    --offset-start: var(--y); /* 圆心距离顶部位置 */
+    --half-radius: var(--h-radius); /* 圆的大小 */
+    transition: --half-radius var(--time),
+      --offset-half var(--time),
+      --offset-block var(--time),
+      border-radius var(--time);
+  }
+
+  .box:hover {
+    --offset-start: 130px;
+    --y: 130px;
+    --offset-half: 100px;
+    --half-radius: 15px;
+    border-radius: 50%;
+  }
+
+  .box:hover:after {
+    border-width: 6px;
+    border-color: #f8913b;
+    top: calc(var(--y) - var(--h-radius) * 5);
+  }
+
+  .box:hover:before {
+    opacity: 1;
+  }
+
+  .box:after {
+    /* content: ''; */
+    position: absolute;
+    left: 0;
+    top: calc(var(--y) + var(--h-radius));
+    width: 100%;
+    border: 1px dashed #8B572A;
+    border: 0.5px dashed #8B572A;
+    transition: top var(--time);
+  }
+
+  .box:before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 190px;
+    width: 60px;
+    height: 60px;
+    background-color: #f03565;
+    border-radius: 50%;
+    clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0% 100%);
+    opacity: 0;
+    transition: opacity .5s;
+  }
+
+  .footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #F43430;
+    box-shadow: inset 0 0 18px 0 #FF7687;
+    position: absolute;
+    bottom: -20px;
+    left: -25px;
+    right: -25px;
+    height: 100px;
+    margin-left: auto;
+    margin-right: auto;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    -webkit-clip-path: url(#mask);
+    clip-path: url(#mask);
+  }
+
+  .container:after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    bottom: 10px;
+    top: 90px;
+    left: -25px;
+    right: -25px;
+    margin-left: auto;
+    margin-right: auto;
+    background: #C50E06;
+    clip-path: polygon(50% 0%, 100% 40%, 100% 100%, 0 100%, 0% 40%);
+  }
+
+  .footer button {
+    min-width: 160px;
+    padding: 0 1.5em;
+    height: 38px;
+    line-height: 38px;
+    text-align: center;
+    margin-top: 30px;
+
+    background-image: linear-gradient(90deg, #FDF1DA 6%, #F8BA7B 99%);
+    border: 1px solid rgba(255,255,255,0.56);
+    box-shadow: 0 6px 28px 0 rgba(182,0,22,0.63);
+    border-radius: 99px;
+
+    font-size: 18px;
+    color: #C51A07;
+  }
+
+  .coupon {
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    border-radius: 2px;
+    padding-right: calc(var(--end-gap) - var(--half-radius));
+    width: var(--box-width);
+    height: 50px;
+    margin-top: 110px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 18px;
+    background-image: linear-gradient(270deg, #FFA329 3%, #F56C34);
+    -webkit-mask-image: paint(corner);
+    mask-image: paint(corner);
+
+    --box-width: 150px;
+    --end-gap: 25px;
+    --half-radius: 5px; /* 圆的大小 */
+    --offset-half: -1px; /* 圆心偏移 */
+    --offset-start: calc(var(--box-width) - var(--end-gap)); /* 圆心距离左侧位置 */
+    --corner-direction: column;
+    transition: --box-width .3s, --offset-start .3s;
+  }
+
+  .coupon:hover {
+    --box-width: 200px;
+  }
+
+  .coupon:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: calc(var(--half-radius) + var(--offset-start));
+    height: 100%;
+    border: 1px dotted rgba(255, 255, 255, 0.7);
+    border: 0.5px dotted rgba(255, 255, 255, 0.7);
+  }
+  </style>
+</head>
+
+<body>
+  <div id="tips"></div>
+  <!-- clip-path 路径 -->
+  <svg width="0" height="0">
+    <defs>
+      <clipPath id="mask">
+        <path d="M390 .102v67.763c0 19.824-16.07 35.894-35.894 35.894H35.894C16.07 103.76 0 87.69 0 67.865V.514C43.76 16.655 114.495 27.14 194.31 27.14 274.968 27.14 346.355 16.432 390 0v.102z"/>
+      </clipPath>
+    </defs>
+  </svg>
+  <main>
+    <div class="container">
+      <div class="box">
+        <h1>CSS Houdini Demo</h1>
+        <h2>Designed by 一丝</h2>
+      </div>
+      <div class="footer">
+        <button>分享</button>
+      </div>
+    </div>
+
+    <div class="coupon">满 100 减 20</div>
+
+    <div class="github-fork-ribbon-wrapper right">
+      <div class="github-fork-ribbon">
+        <a target="_blank" href="https://github.com/yisibl/houdini-demo">Fork me on GitHub</a>
+      </div>
+    </div>
+  </main>
+  <script>
+  if ('paintWorklet' in CSS) {
+    CSS.paintWorklet.addModule('paintworklet.js');
+  } else {
+    document.querySelector('#tips').innerHTML = '您的浏览器暂时不支持 <a href="https://drafts.css-houdini.org/css-paint-api/">CSS Paint API</a>，请升级到最新的 Chrome Canary 并开启：chrome://flags/#enable-experimental-web-platform-features';
+  }
+
+  // 注册自定义属性，使其可以动画
+  if ('registerProperty' in CSS) {
+    CSS.registerProperty({
+      name: '--half-radius',
+      syntax: '<length>',
+      initialValue: '0px',
+      inherits: true,
+    });
+
+    CSS.registerProperty({
+      name: '--offset-half',
+      syntax: '<length>',
+      initialValue: '0px',
+      inherits: false,
+    });
+
+    CSS.registerProperty({
+      name: '--offset-start',
+      syntax: '<length>',
+      initialValue: '0px',
+      inherits: true,
+    });
+
+    CSS.registerProperty({
+      name: '--box-width',
+      syntax: '<length>',
+      initialValue: '0px',
+      inherits: true,
+    });
+
+    CSS.registerProperty({
+      name: '--border',
+      syntax: '<length>',
+      initialValue: '0px',
+      inherits: false,
+    });
+  }
+  </script>
+</body>
+
+</html>

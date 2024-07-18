@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>网页截图示例</title>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+<body>
+  <h1>网页截图示例</h1>
+  <p>点击下面的按钮进行截图：</p>
+  <button onclick="captureScreenshot()">截图</button>
+
+  <script>
+    function captureScreenshot() {
+      html2canvas(document.body).then(function(canvas) {
+        var link = document.createElement("a");
+        link.href = canvas.toDataURL("image/png");
+        link.download = "screenshot.png";
+        link.click();
+      });
+    }
+  </script>
+</body>
+</html>

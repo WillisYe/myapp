@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+
+<body>
+	<div class="bangNavBd">
+		<ul class="bangNavList">
+			<li><a href="/music/t_w_hits.htm">2023歌曲排行榜</a></li>
+			<li><a href="/music/t_hits.htm">2022歌曲排行榜</a></li>
+			<li><a href="/music/t_m_hits.htm">歌曲Top500首</a></li>
+			<li><a href="/music/t_new.htm">2023最新歌曲<em class="icoHot"></em></a></li>
+			<li><a href="/music/t_allhits.htm">一人一首成名曲</a></li>
+			<li><a href="/geshou/all-all-wangluo.htm">》网络歌手大全</a></li>
+		</ul>
+		<div class="bangNavLine"></div>
+		<ul class="bangNavList">
+			<li><a href="/music/bdhot.htm">百度排行榜</a></li>
+			<li><a href="/music/sshot.htm">QQ排行榜</a></li>
+			<li><a href="/music/kuwohot.htm">酷我排行榜</a></li>
+			<li><a href="/music/kugouhot.htm">酷狗排行榜</a></li>
+		</ul>
+		<div class="bangNavLine"></div>
+		<ul class="bangNavList">
+			<li><a href="/zhuanji/3.htm">经典老歌</a></li>
+			<li><a href="/zhuanji/55.htm">网络歌曲<em class="icoHot"></em></a></li>
+			<li><a href="/zhuanji/7.htm">伤感歌曲</a></li>
+			<li><a href="/zhuanji/66.htm">英文歌曲</a></li>
+			<li><a href="/zhuanji/25.htm">非主流歌曲</a></li>
+			<li><a href="/zhuanji/13.htm">DJ舞曲榜</a></li>
+			<li><a href="/zhuanji/11.htm">粤语歌曲</a></li>
+			<li><a href="/zhuanji/taste8.htm">欧美歌曲</a></li>
+			<li><a href="/zhuanji/taste9.htm">韩国歌曲</a></li>
+			<li><a href="/zhuanji/73.htm">电影歌曲</a></li>
+			<li><a href="/zhuanji/75.htm">KTV歌曲</a></li>
+		</ul>
+	</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script>
+		var list = []
+		var $lista = $('a')
+		$lista.each(function() {
+			var href = $(this).attr('href')
+			var tit = $(this).text()
+			if (href.includes('music') || href.includes('zhuanji')) {
+				list.push({href, tit})
+			}
+		})
+		console.log(JSON.stringify(list, null, 2))
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    ul {
+      width: 200px;
+      height: 200px;
+      border: 1px solid #000;
+      overflow-y: scroll;
+    }
+
+    li {
+      height: 40px;
+      margin: 10px;
+      width: 80%;
+    }
+  </style>
+</head>
+
+<body>
+  <img src="red.svg" alt="">
+  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="16px" height="24px" viewBox="0 0 16 24" enable-background="new 0 0 16 24" xml:space="preserve">
+    <image id="image0" width="16" height="24" x="0" y="0" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAYCAMAAADEfo0+AAAABGdBTUEAALGPC/xhBQAAACBjSFJN
+AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAXVBMVEUAAAD/PDD/OzD/QED/
+OzD/OzD/Pi7/OzD/PDD/OzD/AAD/OzD/OzD/Njb/Oy//OzD/OjD/OzD/PC3/OzD/AAD/PDL/OjD/
+OzD/OjD/OzD/PDD/OzD/OzD/OzD///+Hr4NvAAAAHXRSTlMAyV8I7Ioh/bRKAt10E/efNcoitQEz
+ZfxP6Gq54CrG51AAAAABYktHRB5yCiArAAAAB3RJTUUH6AEWCxkmO4nRuAAAAFVJREFUGNNdzzcC
+gCAAxdAPqIi9d+9/TQcdMBnfFpn7nyzBJQClhMwDlBMCoSgBqgh1A1BL6AjqCZYQDb0QDX0weIBG
+QiBMBqDZA7SsAG07QO44L/8AfFccvR64aEMAAABEZVhJZk1NACoAAAAIAAGHaQAEAAAAAQAAABoA
+AAAAAAOgAQADAAAAAQABAACgAgAEAAAAAQAAABCgAwAEAAAAAQAAABgAAAAABCU6MwAAACV0RVh0
+ZGF0ZTpjcmVhdGUAMjAyNC0wMS0yMlQxMToyNTozOCswMDowMJf/w/wAAAAldEVYdGRhdGU6bW9k
+aWZ5ADIwMjQtMDEtMjJUMTE6MjU6MzgrMDA6MDDmontAAAAAKHRFWHRkYXRlOnRpbWVzdGFtcAAy
+MDI0LTAxLTIyVDExOjI1OjM4KzAwOjAwsbdanwAAABF0RVh0ZXhpZjpDb2xvclNwYWNlADEPmwJJ
+AAAAEnRFWHRleGlmOkV4aWZPZmZzZXQAMjZTG6JlAAAAF3RFWHRleGlmOlBpeGVsWERpbWVuc2lv
+bgAxNr33wYwAAAAXdEVYdGV4aWY6UGl4ZWxZRGltZW5zaW9uADI0pUIq5gAAAABJRU5ErkJggg==" />
+  </svg>
+  <ul id="parentElementId">
+    <li id="test1">test1</li>
+    <li id="test2">test2</li>
+    <li id="test3">test3</li>
+    <li id="test4">test4</li>
+    <li id="test5">test5</li>
+    <li id="test6">test6</li>
+    <li id="test7">test7</li>
+    <li id="test8">test8</li>
+    <li id="test9">test9</li>
+    <li id="test10">test10</li>
+  </ul>
+  <button onclick="test()">test</button>
+  <br>
+  <div id="result"></div>
+  <script>
+    function isChildInParentViewport(parentEl, childEl) {
+      const parentRect = parentEl.getBoundingClientRect();
+      const childRect = childEl.getBoundingClientRect();
+
+      return (
+        childRect.top >= parentRect.top &&
+        childRect.left >= parentRect.left &&
+        childRect.bottom <= parentRect.bottom &&
+        childRect.right <= parentRect.right
+      );
+    }
+
+    function test() {
+      // 用法示例
+      const parentElement = document.getElementById('parentElementId');
+
+      var childrens = Array.from(document.querySelectorAll('li'))
+
+      var list = childrens.filter((item, index) => {
+        const isChildInViewport = isChildInParentViewport(parentElement, item);
+        return isChildInViewport
+      })
+
+      var ids = list.map(item => item.id)
+      document.querySelector('#result').innerHTML = '当前视窗内的元素有：' + ids
+    }
+
+
+  </script>
+</body>
+
+</html>

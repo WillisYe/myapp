@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .cylinder {
+      width: 100px;
+      height: 200px;
+      background: #3498db;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .cylinder::before,
+    .cylinder::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100px;
+      background: #2980b9;
+    }
+
+    .cylinder::before {
+      top: 0;
+      border-radius: 50% 50% 0 0;
+    }
+
+    .cylinder::after {
+      bottom: 0;
+      border-radius: 0 0 50% 50%;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="cylinder"></div>
+</body>
+
+</html>

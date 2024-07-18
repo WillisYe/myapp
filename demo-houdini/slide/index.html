@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .wrap {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            background-color: cyan;
+        }
+
+        .header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            line-height: 100px;
+            text-align: center;
+        }
+
+        .body {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 100px;
+            bottom: 100px;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            line-height: 100px;
+            text-align: center;
+        }
+
+        .ul {
+            position: relative;
+            width: 300px;
+            height: 400px;
+        }
+
+        .li {
+            position: absolute;
+            width: 300px;
+            height: 400px;
+            background-color: #fff;
+            border-radius: 6px;
+            box-shadow: #e9cacc 0px 0px 2px;
+            text-align: center;
+            line-height: 400px;
+            scale: 0.9;
+        }
+
+        .li-show {
+            top: 0;
+            opacity: 1;
+        }
+
+        .li-show.top1 {
+            top: -40px;
+            scale: 1;
+        }
+
+        .li-show.top2 {
+            top: -20px;
+            scale: .95;
+        }
+
+        .li-out {
+            top: -999px;
+            opacity: 0;
+            scale: 1;
+        }
+
+        .fadeUp {
+            animation: fadeUp 1000ms 1 ease-in-out;
+            animation-fill-mode: both;
+        }
+
+        @keyframes fadeUp {
+            0% {
+                top: 0;
+                opacity: 1;
+            }
+
+            100% {
+                top: -999px;
+                opacity: 0;
+            }
+        }
+
+        .fadeDown {
+            animation: fadeDown 1000ms 1 ease-in-out;
+            animation-fill-mode: both;
+        }
+
+        @keyframes fadeDown {
+            0% {
+                top: -999px;
+                opacity: 0;
+            }
+
+            100% {
+                top: -40px;
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="header">
+            <h2>头部</h2>
+        </div>
+        <div class="body">
+            <div class="ul">
+                <div class="li li-show">test1</div>
+                <div class="li li-show">test2</div>
+                <div class="li li-show">test3</div>
+                <div class="li li-show">test4</div>
+                <div class="li li-show top2">test5</div>
+                <div class="li li-show top1">test6</div>
+            </div>
+        </div>
+        <div class="footer">
+            <h2>尾部</h2>
+        </div>
+    </div>
+    <script src="https://cdn.bootcdn.net/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        var hammertime = new Hammer(document.querySelector('.ul'));
+        hammertime.get('swipe').set({ direction: Hammer.DIRECTION_VERTICAL });
+        hammertime.on('swipeup', function (ev) {
+            if ($('.li-show').length > 1) {
+                var $last = $('.li-show').last()
+                $last.addClass('fadeUp')
+                setTimeout(() => {
+                    $last.removeClass('li-show').addClass('li-out').removeClass('fadeUp')
+                    $('.li').removeClass('top1 top2')
+                    $('.li-show').last().addClass('top1')
+                    $('.li-show').last().prev().addClass('top2')
+                }, 1100)
+            } else {
+                alert('最后一条了')
+            }
+        });
+        hammertime.on('swipedown', function (ev) {
+            if ($('.li-show').length < $('.li').length) {
+                var $cur = $('.li-out').first()
+                $cur.addClass('fadeDown')
+                setTimeout(() => {
+                    $cur.removeClass('li-out').addClass('li-show').removeClass('fadeDown')
+                    $('.li').removeClass('top1 top2')
+                    $('.li-show').last().addClass('top1')
+                    $('.li-show').last().prev().addClass('top2')
+                }, 1100)
+            } else {
+                alert('前面没有了')
+            }
+        });
+    </script>
+</body>
+
+</html>

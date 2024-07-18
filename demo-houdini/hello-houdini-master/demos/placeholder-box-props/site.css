@@ -1,0 +1,71 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0 20px;
+    background-image: linear-gradient(to bottom, #70e1f5, #ffd194);
+    font: 1rem/1.25 'Mukta Mahee', sans-serif;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 20px;
+    align-items: center;
+    height: 100%;
+}
+
+.slot {
+    display: flex;
+    justify-content: center;
+}
+
+.placeholder {
+    background-image: paint(placeholder-box-props);
+
+    background-color: #fff;
+    width: 120px;
+    height: 120px;
+    max-height: 100vh;
+    overflow: auto;
+    resize: both;
+}
+
+.slot:nth-child(1) .placeholder {
+    border: 2px solid #fd7e14;
+}
+
+.slot:nth-child(2) .placeholder {
+    border: 6px solid #228be6;
+}
+
+.slot:nth-child(3) .placeholder {
+    border: 1rem solid #e64980;
+}
+
+.warning {
+    display: none;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    padding: 20px;
+    border-top: 4px dashed #e8590c;
+    background-color: #ffe8cc;
+    color: #e8590c;
+    text-align: center;
+}
+
+.no-support .warning {
+    display: block;
+}
+
+.warning .fas {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}

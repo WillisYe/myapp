@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // 创建画布
+    var canvas = document.createElement('canvas');
+    canvas.width = 400;
+    canvas.height = 400;
+    document.body.appendChild(canvas);
+    var ctx = canvas.getContext('2d');
+
+    // 定义三角形的三个顶点坐标
+    var A = { x: 50, y: 300 };
+    var B = { x: 250, y: 300 };
+    var C = { x: 150, y: 100 };
+
+    // 绘制三角形
+    ctx.beginPath();
+    ctx.moveTo(A.x, A.y);
+    ctx.lineTo(B.x, B.y);
+    ctx.lineTo(C.x, C.y);
+    ctx.closePath();
+    ctx.stroke();
+
+    // 计算三条边的长度
+    function distance(point1, point2) {
+      return Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));
+    }
+    var AB_length = distance(A, B);
+    var BC_length = distance(B, C);
+    var CA_length = distance(C, A);
+
+    // 计算三个角的角度（以弧度为单位）
+    function angle(point1, point2, point3) {
+      var a = distance(point2, point3);
+      var b = distance(point1, point3);
+      var c = distance(point1, point2);
+      return Math.acos((a * a + b * b - c * c) / (2 * a * b));
+    }
+    var angle_A = angle(B, A, C);
+    var angle_B = angle(C, B, A);
+    var angle_C = angle(A, C, B);
+
+    // 标注边长和角度
+    ctx.font = "14px Arial";
+    ctx.fillText("AB = " + AB_length.toFixed(2), (A.x + B.x) / 2, (A.y + B.y) / 2 + 20);
+    ctx.fillText("BC = " + BC_length.toFixed(2), (B.x + C.x) / 2, (B.y + C.y) / 2 + 20);
+    ctx.fillText("CA = " + CA_length.toFixed(2), (C.x + A.x) / 2, (C.y + A.y) / 2 + 20);
+    ctx.fillText("A = " + (angle_A * 180 / Math.PI).toFixed(2) + "°", A.x - 20, A.y - 20);
+    ctx.fillText("B = " + (angle_B * 180 / Math.PI).toFixed(2) + "°", B.x, B.y - 20);
+    ctx.fillText("C = " + (angle_C * 180 / Math.PI).toFixed(2) + "°", C.x, C.y + 30);
+
+    // 绘制边长
+    function drawLen(s, e, l = 10) {
+      var k = (y2 - y1) / (x2 - x1)
+      // 垂线方程 y = (-1/k)*x + l
+      
+    }
+    // 绘制角度
+    function drawLen() {
+
+    }
+  </script>
+</body>
+
+</html>

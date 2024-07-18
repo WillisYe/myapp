@@ -1,0 +1,127 @@
+@charset "UTF-8";
+
+/*css reset*/
+html,
+body {
+    font-family: "Microsoft Yahei", Arial;
+}
+
+/*html{overflow-x:hidden;overflow-y:hidden;}*/
+body {
+    margin: 0;
+    padding: 0;
+}
+
+ul,
+li {
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+}
+
+input,
+button,
+textarea {
+    outline: none;
+}
+
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+form,
+fieldset,
+p,
+blockquote,
+th,
+td,
+ol,
+ul,
+li,
+img,
+input,
+button,
+textarea,
+form {
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    color: #262626;
+    text-decoration: none;
+}
+
+a,
+button,
+input,
+textarea {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
+}
+
+img {
+    vertical-align: middle;
+    border: 0;
+    -ms-interpolation-mode: bicubic;
+}
+
+input {
+    border: none;
+    background: none;
+}
+
+.pull-left {
+    float: left;
+}
+
+.pull-right {
+    float: right;
+}
+
+.clearfix {
+    clear: both;
+}
+
+.block {
+    display: block;
+}
+
+.hide {
+    display: none;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-indent {
+    text-indent: 2em;
+}
+
+.visibility {
+    visibility: hidden;
+    position: absolute;
+    z-index: -1;
+}
+.inaline {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.intwoline {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}

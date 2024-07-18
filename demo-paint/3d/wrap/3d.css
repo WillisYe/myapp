@@ -1,0 +1,13 @@
+body {
+  min-height: 100vh;
+  margin: 0;
+  background: hsl(240, 56%, 98%);
+}
+
+.w-240 {
+  width: 60rem;
+}
+
+.h-120 {
+  height: 30rem;
+}

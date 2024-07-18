@@ -1,0 +1,8 @@
+requests
+
+pathlib
+bs4
+selenium
+PySide2
+
+asyncio

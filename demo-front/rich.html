@@ -1,0 +1,113 @@
+<html>
+
+<body>
+
+  <div id="rich-wrap"></div>
+
+  <script src="https://cdn.staticfile.org/jquery/3.7.1/jquery.js"></script>
+  <script>
+    function test() {
+      var def = $.Deferred();
+      var res = $.Deferred();
+      def.resolve(res);
+      return def;
+    }
+    function test10() {
+      return new Promise((resolve) => {
+        let res = new Promise((innerResolve) => {
+          innerResolve();
+        });
+        resolve(res);
+      });
+    }
+    function test1() {
+      return new Promise((resolve, reject) => resolve())
+    }
+    test().then(function () {
+      console.log(111111)
+    })
+    test10().then(function () {
+      console.log(101010)
+    })
+    test1().then(function () {
+      console.log(222222)
+    })
+    Promise.resolve(Promise.resolve()).then(function () {
+      console.log(333333)
+    })
+    setTimeout(() => {
+      
+    }, delay)
+  </script>
+  <script>
+    var data = `<p style="text-indent:32.0pt; text-align:justify"><span style="font-family:FangSong"><span
+        style="font-size:10.5pt"><span style="line-height:27.0pt"><span lang="EN-US"
+            style="font-size:16.0pt">11</span><span style="font-size:16.0pt">月24日下午，北海预报减灾中心组织开展年度第三期“青年讲堂”。本期讲堂以“时代各有不同
+            青春一脉相承”为主题，中心原副总工程师任荣珠和参加中国第13次北冰洋科学考察队员辛若雪担任宣讲嘉宾。中心领导班子及职工代表50余人参加活动。</span></span></span></span></p>
+  <p style="text-indent:32.0pt; text-align:justify">&nbsp;</p>
+  <p style="text-indent:32pt; text-align:center"><img alt="" src="/upload/BContent/2023120110410100 颁发证书.png"
+      style="width:477px; height:332px"></p>
+  <p align="center" style="text-align:center"><span style="font-family:FangSong"><span style="font-size:10.5pt"><span
+          style="font-size:15.0pt">图1 中心领导为青年讲堂宣讲员颁发聘书</span></span></span></p>
+  <p style="text-indent:32.0pt; text-align:justify"><span style="font-family:FangSong"><span
+        style="font-size:10.5pt"><span style="line-height:27.0pt"><span style="font-size:16.0pt">辛若雪以“一路向北
+            破浪乘风”为题，讲述了参与中国第13次北冰洋科学考察，随船78天，航行1.5万余海里，完成49个站位作业并首次在我国北冰洋科学考察中成功冲击北极点的精彩故事，表达了新时代新青年不畏艰险、挺膺担当的壮志豪情。</span></span></span></span>
+  </p>
+  <p style="text-indent:32.0pt; text-align:justify"><span style="font-family:FangSong"><span
+        style="font-size:10.5pt"><span style="line-height:27.0pt"><span
+            style="font-size:16.0pt">中心原副总工程师任荣珠参加工作37年，是北海局和中心事业改革发展的亲历者，是中心海洋环境调查与监测工作向海洋生态监测及保护修复升级转型的实践者。刚接到退休通知的她满含不舍之情回溯发展历史，对深耕多年的工作领域提出中肯建议，勉励中心青年要永葆初心、不负韶华，寄语中心事业发展行稳致远、再续新篇。</span></span></span></span>
+  </p>
+  <p style="text-indent:32.0pt; text-align:justify"><span style="font-family:FangSong"><span
+        style="font-size:10.5pt"><span style="line-height:27.0pt"><span
+            style="font-size:16.0pt">中心领导号召中心职工，要继续传承“严谨务实、团结协作、敬业规范、高效服务”的工作作风，脚踏实地、接续奋斗，紧抓中心改革发展契机，坚守新时期新使命，走好新时代长征路。</span></span></span></span>
+  </p>
+  <p style="text-indent:32pt; text-align:center"><span style="font-family:FangSong"><span style="font-size:10.5pt"><span
+          style="line-height:27.0pt"><span style="font-size:16.0pt"><img alt=""
+              src="/upload/BContent/2023120110293802.中国第13次北冰洋科学考察队员辛若雪宣讲.bmp"
+              style="width:580px; height:415px"></span></span></span></span></p>
+  <p style="text-indent:32pt; text-align:center"><span style="font-family:FangSong"><span style="font-size:15.0pt">图2
+        中国第13次北冰洋科学考察队员辛若雪</span><span style="font-size:15.0pt">宣讲</span></span></p>
+  <p style="text-indent:32pt; text-align:center">&nbsp;</p>
+  <p style="text-indent:32pt; text-align:center"><span style="font-family:FangSong"><span style="font-size:15.0pt"><img
+          alt="" src="/upload/BContent/2023120110301803.中心原副总工程师任荣珠宣讲.bmp"
+          style="width:580px; height:396px"></span></span></p>
+  <p align="center" style="text-align:center"><span style="font-family:FangSong"><span style="font-size:10.5pt"><span
+          style="font-size:15.0pt">图3 中心原副总工程师任荣珠宣讲</span></span></span></p>
+  <p align="center" style="text-align:center">&nbsp;</p>
+  <p align="center" style="text-align:center"><span style="font-family:FangSong"><span style="font-size:10.5pt"><span
+          style="font-size:15.0pt"><img alt="" src="/upload/BContent/2023120110310204.全体参会人员合影.bmp"
+            style="width:680px; height:383px"></span></span></span></p>
+  <p align="center" style="text-align:center; text-indent:30.0pt"><span style="font-size:10.5pt"><span
+        style="line-height:27.0pt"><span style="font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"><span
+            style="font-size:15.0pt"><span style="font-family:仿宋">图4 全体参会人员合影</span></span></span></span></span></p>
+  <p align="center" style="text-align:center; text-indent:30.0pt">&nbsp;</p>
+  <p style="text-indent:28.0pt; text-align:justify"><span style="font-size:10.5pt"><span
+        style="line-height:27.0pt"><span style="font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"><span
+            style="font-size:14.0pt"><span
+              style="font-family:幼圆">北海预报减灾中心“青年讲堂”成立于2015年，目前初步形成“精英沙龙”“中心故事荟”“智慧课堂”三个子品牌。“青年讲堂”致力于为青年搭建平台、请青年走上讲台，已成为联系青年、服务青年、凝聚青年的有力抓手。</span></span></span></span></span>
+  </p>
+  <p style="text-indent:32pt; text-align:right"><span style="font-size:10.5pt"><span style="line-height:27.0pt"><span
+          style="font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"><span style="font-size:16.0pt"><span
+              style="font-family:仿宋">（图、文&nbsp; 北海预报减灾中心）</span></span></span></span></span></p>
+  <p style="text-indent:32.0pt; text-align:justify">&nbsp;</p>`
+    var html = `<div>${data}</div>`
+    var $html = $(html)
+    $html.prepend(`<style> 
+      p { position: relative; } 
+      img { max-width: 100%; position: absolute; left: 50%; transform: translate(-50%, 0); top: 0; } 
+      </style>`)
+    var $imgs = $html.find('img')
+    $imgs.each(function () {
+      var $p = $(this).parents('p')
+      var [imgWidth, imgHeight] = [$(this).width(), $(this).height()]
+      var pWidth = Math.min($('#rich-wrap').width(), imgWidth)
+      var pHeight = imgHeight * (pWidth / imgWidth)
+      console.log("$('#rich-wrap').width()", $('#rich-wrap').width())
+      console.log('imgWidth, imgHeight, pWidth, pHeight, imgHeight/imgWidth, pHeight/pWidth', imgWidth, imgHeight, pWidth, pHeight, imgHeight / imgWidth, pHeight / pWidth)
+      $p.removeAttr('style').height(pHeight);
+    });
+    $('#rich-wrap').html($html.html())
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas Leaf</title>
+  <style>
+    canvas {
+      border: 1px solid #000;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="myCanvas" width="500" height="500"></canvas>
+
+  <script>
+    window.onload = function () {
+      const canvas = document.getElementById('myCanvas');
+      const ctx = canvas.getContext('2d');
+
+      ctx.translate(canvas.width / 2, canvas.height / 2)
+      ctx.scale(1, -1)
+
+      drawFlower(50, 25, 8)
+
+      function drawFlower(r0, r1, count) {
+        // r0 花盘半径 r1 花瓣半径 count 花瓣数量
+        for (let i = 0; i < count; i++) {
+          ctx.beginPath();
+          ctx.rotate(i * (360 / count) * Math.PI / 180);
+          ctx.arc(0, r0, r1, 0, 2 * Math.PI);
+          ctx.strokeStyle = 'black';
+          ctx.stroke();
+          ctx.fillStyle = 'pink';
+          ctx.fill();
+          ctx.setTransform(1, 0, 0, -1, canvas.width / 2, canvas.height / 2);
+        }
+
+        // 绘制花心  
+        ctx.beginPath();
+        ctx.arc(0, 0, r0, 0, 2 * Math.PI);
+        ctx.fillStyle = 'yellow';
+        ctx.fill();
+        ctx.strokeStyle = 'black';
+        ctx.stroke();
+      }
+    }
+  </script>
+</body>
+
+</html>

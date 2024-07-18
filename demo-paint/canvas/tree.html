@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- browser-sync start --server --files "**" --https -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>随机树</title>
+  <!-- define unocss options... -->
+  <script>
+    window.__unocss = {
+      rules: [],
+      // presets: [ ],
+    }
+  </script>
+  <!-- ... and then load the runtime -->
+  <script src="https://cdn.jsdelivr.net/npm/@unocss/runtime"></script>
+  <!-- <script src=" https://cdn.jsdelivr.net/npm/@unocss/runtime@0.58.2/uno.global.min.js "></script> -->
+  <!-- <script src="//unpkg.com/@unocss/runtime"></script> -->
+  <style>
+    canvas {
+      border: 1px solid #000;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="space-y-10px">
+    <div class="flex space-x-10px">
+      <div><button onclick="reDraw()">重绘</button></div>
+      <div><button onclick="draw()">绘制随机树</button></div>
+      <div><button onclick="clearRect()">清空</button></div>
+    </div>
+    <canvas id="myCanvas" width="1200" height="800"></canvas>
+  </div>
+
+  <script>
+    function reDraw() {
+      clearRect()
+      draw()
+    }
+
+    function draw() {
+      drawBranch([0, 0], getRandomAt(40, 5), getRandomAt(100, 10), getRandomAt(90, 2))
+    }
+
+    function clearRect() {
+      ctx.clearRect(-canvas.width / 2, 0, canvas.width, canvas.height);
+    }
+
+    // 获取 canvas 元素
+    var canvas = document.getElementById('myCanvas');
+    // 获取绘图上下文
+    var ctx = canvas.getContext('2d');
+
+    // 将原点调整到下边框中点
+    ctx.translate(canvas.width / 2, canvas.height);
+
+    // 调整 y 坐标轴朝向为上
+    ctx.scale(1, -1);
+
+    // 绘制树
+    drawBranch([0, 0], getRandomAt(40, 5), getRandomAt(100, 10), getRandomAt(90, 2))
+
+    var colorTree = getRandomBetweenColors('#2c2723', '#413a30');
+
+    function drawBranch(pos, w, h, deg) {
+
+      if (w < 10 && Math.random() < 0.1) {
+        drawLeaf(pos)
+      }
+      if (w < 5 && Math.random() < 0.3) {
+        drawEnd(pos)
+        return
+      }
+      if (w <= 2) {
+        drawEnd(pos)
+        return
+      }
+      var rad = degreesToRadians(deg)
+
+      ctx.strokeStyle = colorTree;
+      ctx.lineWidth = w;
+      ctx.lineCap = "square";
+      ctx.beginPath();
+      ctx.moveTo(pos[0], pos[1]);
+      var [x1, y1] = [pos[0] + Math.cos(rad) * h, pos[1] + Math.sin(rad) * h]
+      ctx.lineTo(x1, y1);
+      ctx.stroke();
+
+      // 分支在原基础上随机变细变短
+      var [wNext, hNext] = [getRandomAt(0.70, 0.02) * w, getRandomAt(0.93, 0.03) * h]
+      drawBranch([x1, y1], wNext, hNext, deg - getRandomAt(20, 2))
+      drawBranch([x1, y1], wNext, hNext, deg + getRandomAt(20, 2))
+    }
+
+    // 绘制终点
+    function drawEnd(pos) {
+      if (Math.random() > 0.5) {
+        drawFruit(pos)
+      } else {
+        drawLeaf(pos)
+      }
+    }
+
+    // 绘制树叶
+    function drawLeaf(pos) {
+      ctx.beginPath();
+      ctx.moveTo(pos[0], pos[1]);
+      ctx.quadraticCurveTo(pos[0] - 20, pos[1] - 25, getRandomAt(pos[0], 10), pos[1] - getRandomAt(100, 20));
+      ctx.quadraticCurveTo(pos[0] + 20, pos[1] - 25, pos[0], pos[1]);
+      ctx.fillStyle = getRandomBetweenColors('#67a83f', '#e5a90b');
+      ctx.fill();
+    }
+
+    // 绘制果实
+    function drawFruit(pos) {
+      ctx.beginPath();
+      ctx.arc(pos[0], pos[1], getRandomAt(12, 2), 0, 2 * Math.PI);
+      ctx.fillStyle = getRandomBetweenColors('#fd4604', '#de8f18');
+      ctx.fill();
+    }
+
+    // deg to rad 角度转弧度
+    function degreesToRadians(degrees) {
+      return degrees * (Math.PI / 180);
+    }
+
+    // 获取随机数(s, e)
+    function getRandom(s, e) {
+      var random = s + Math.random() * (e - s)
+      return random;
+    }
+
+    // 获取随机数(base - v, base + v)
+    function getRandomAt(base, v) {
+      return getRandom(base - v, base + v)
+    }
+
+    // 获取两个颜色之间的随即颜色
+    function getRandomBetweenColors(color1, color2) {
+      var randomColor = '#';
+      for (var i = 1; i < 7; i += 2) {
+        var sub1 = parseInt(color1.substr(i, 2), 16);
+        var sub2 = parseInt(color2.substr(i, 2), 16);
+        var sub = Math.floor(sub1 + Math.random() * (sub2 - sub1 + 1)); // 加1以包括color2本身
+        randomColor += sub.toString(16).padStart(2, '0'); // 使用padStart确保生成的颜色值始终为两位
+      }
+      return randomColor;
+    }
+
+  </script>
+</body>
+
+</html>

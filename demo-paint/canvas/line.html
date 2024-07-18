@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>随机树</title>
+  <style>
+    canvas {
+      border: 1px solid #000;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="myCanvas" width="795" height="100"></canvas>
+
+  <script>
+    // 获取 canvas 元素
+    var canvas = document.getElementById('myCanvas');
+    // 获取绘图上下文
+    var ctx = canvas.getContext('2d');
+
+    // 将原点调整到下边框中点
+    // ctx.translate(canvas.width / 2, canvas.height);
+
+    // 调整 y 坐标轴朝向为上
+    // ctx.scale(1, -1);
+
+    // 绘制树
+    drawLine([10, 10], 'cyan')
+    drawLine([10, 25], 'black')
+
+    function drawLine(pos, color) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 5;
+      ctx.lineCap = "square";
+      ctx.beginPath();
+      ctx.moveTo(pos[0], pos[1]);
+      var list = [
+        { dx: 140, dy: 0 },
+        { dx: 15, dy: 15 },
+        { dx: 40, dy: 0 },
+        { dx: 15, dy: 15 },
+        { dx: 350, dy: 0 },
+        { dx: 15, dy: -15 },
+        { dx: 40, dy: 0 },
+        { dx: 15, dy: -15 },
+        { dx: 140, dy: 0 },
+      ]
+      var curPoint = [...pos]
+      list.forEach((element, index) => {
+        curPoint[0] += element['dx']
+        curPoint[1] += element['dy']
+        ctx.lineTo(...curPoint);
+      });
+      ctx.stroke();
+    }
+  </script>
+</body>
+
+</html>

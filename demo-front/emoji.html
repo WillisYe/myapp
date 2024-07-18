@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="https://raw.githubusercontent.com/joypixels/emoji-toolkit/master/lib/js/joypixels.min.js"></script>
+    <script>
+        var emojiObj = {}
+        var emojiList = []
+
+        async function getStrLenght(str = '') {
+            if (Object.keys(emojiObj).length == 0) {
+                emojiObj = await fetch('https://api.github.com/emojis')
+                    .then(response => response.json())
+                    .catch(error => console.log('emojiObj请求出错', error))
+            }
+
+            var arr = Object.keys(emojiObj)
+            emojiList = arr.map(item => joypixels.shortnameToUnicode(`:${item}:`)).filter(item => !item.startsWith(':') && !['*️⃣'].includes(item)).slice(0, -1)
+            var regStr = `(${emojiList.join('|')})`
+            var reg = new RegExp(regStr)
+            var len = str.replace(reg, '_').length
+            console.log(`${str}的长度为：${len}`)
+            return len
+        }
+
+        async function main() {
+            await getStrLenght('ab🇨🇳')
+            new Array(10).fill(1).forEach(async element => {
+                await getStrLenght('test' + getRandomItems(emojiList, 1))
+            });
+        }
+
+        function getRandomItems(arr, n) {
+            const shuffled = arr.sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, n).join('');
+        }
+
+        main()
+    </script>
+</body>
+
+</html>

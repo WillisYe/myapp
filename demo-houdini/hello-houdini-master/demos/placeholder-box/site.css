@@ -1,0 +1,97 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 20px;
+    color: #333;
+    background-color: #eee;
+    font: 1rem/1.25 'Mukta Mahee', sans-serif;
+}
+
+.placeholder {
+    background-image: paint(placeholder-box);
+
+    background-color: #fff;
+    max-width: 100%;
+    border: 2px solid #666;
+    overflow: auto;
+    resize: both;
+}
+
+header {
+    width: 600px;
+    height: 100px;
+    margin: 0 auto;
+}
+
+.content-wrapper {
+    display: flex;
+    width: 600px;
+    margin: 40px auto 0;
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+main {
+    width: 440px;
+}
+
+h1 {
+    margin: 0;
+    font-weight: normal;
+}
+
+p {
+    line-height: 1.25;
+}
+
+.row {
+    margin: 0 10px 0 -10px;
+}
+
+.row::after {
+    content: '';
+    display: block;
+    clear: both;
+}
+
+main .placeholder {
+    float: left;
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+}
+
+aside {
+    width: 140px;
+    margin-left: 20px;
+}
+
+aside .placeholder {
+    width: 140px;
+    height: 320px;
+    margin: 0 auto;
+}
+
+.warning {
+    display: none;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    padding: 20px;
+    border-top: 4px dashed #e8590c;
+    background-color: #ffe8cc;
+    color: #e8590c;
+    text-align: center;
+}
+
+.no-support .warning {
+    display: block;
+}
+
+.warning .fas {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}

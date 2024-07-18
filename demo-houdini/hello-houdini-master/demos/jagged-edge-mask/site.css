@@ -1,0 +1,74 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0 40px;
+    background: #000;
+    font: 1rem/1.25 'Mukta Mahee', sans-serif;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 40px;
+    align-items: center;
+    height: 100%;
+}
+
+.slot {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    height: 300px;
+    border: 1px solid #fff;
+    background-image: linear-gradient(to right, #444, #000);
+}
+
+.jagged {
+    --tooth-width: 80px;
+    --tooth-height: 30px;
+    -webkit-mask-image: paint(jagged-edge);
+
+    position: absolute;
+    top: 30%;
+    bottom: 0;
+    width: 100%;
+}
+
+.slot:nth-child(1) .jagged {
+    background-image: linear-gradient(to right, #22c1c3, #fdbb2d);
+}
+
+.slot:nth-child(2) .jagged {
+    /* pixel art from Iconoclasts, fun game! http://www.playiconoclasts.com/ */
+    background-image: url('iconoclasts.png');
+    background-size: cover;
+    background-position: 50% 0;
+}
+
+.warning {
+    display: none;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    padding: 20px;
+    border-top: 4px dashed #e8590c;
+    background-color: #ffe8cc;
+    color: #e8590c;
+    text-align: center;
+}
+
+.no-support .warning {
+    display: block;
+}
+
+.warning .fas {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}

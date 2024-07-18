@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .container {
+      position: relative;
+    }
+
+    .content {
+      position: absolute;
+    }
+  </style>
+</head>
+
+<body onload="main()">
+  <div class="container">
+    <template>
+      <span>天地玄黄 宇宙洪荒 日月盈昃 辰宿列张 寒来暑往 秋收冬藏 闰馀成岁 律吕调阳 云腾致雨 露结为霜 金生丽水 玉出昆冈 剑号巨阙 珠称夜光 果珍李柰 菜重芥姜 海咸河淡 鳞潜羽翔 龙师火帝 鸟官人皇 始制文字 乃服衣裳</span>
+      <img style="height:20px;" src="https://static.segmentfault.com/main_site_next/9cb17c82/_next/static/media/logo-b.1ef53c6e.svg" />
+    </template>
+    <div class="content"> </div>
+  </div>
+  <script>
+    function main() {
+      const template = document.querySelector('template');
+      const target = document.querySelector('.container .content');
+      target.innerHTML = template.innerHTML;
+      const span = target.querySelector('.container .content span');
+      const spanText = span.innerHTML;
+
+      var index = spanText.length;
+
+      const myResizeObserver = new ResizeObserver(entries => {
+        for (let entry of entries) {
+          onchange(true)
+        }
+      });
+
+      myResizeObserver.observe(target);
+
+      // 创建一个 MutationObserver 实例，传入回调函数
+      const myMutationObserver = new MutationObserver((mutationsList, myMutationObserver) => {
+        for (let mutation of mutationsList) {
+          onchange(false)
+        }
+      });
+
+      // 配置观察器，监视子元素变化和属性变化
+      const config = { childList: true, attributes: true };
+      myMutationObserver.observe(span, config);
+
+      function onchange(reset) {
+        console.log(reset, index)
+        if (reset) {
+          index = spanText.length
+        }
+
+        if (target.clientHeight > 45) {
+          index = index - 1
+          span.innerHTML = spanText.slice(0, index) + '…'
+        } else {
+          if (reset) {
+            if (index < spanText.length) {
+              span.innerHTML = spanText.slice(0, index) + '…'
+            } else {
+              span.innerHTML = spanText
+            }
+          }
+          target.style.position = 'relative'
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>

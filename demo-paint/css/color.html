@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* 
+    在 @property 规则中，syntax 属性可以使用以下几种属性：
+    1. <length>：表示长度值，如像素（px）、百分比（%）等。
+    2. <color>：表示颜色值，可以是关键词、十六进制、RGB、HSL等表示方式。
+    3. <url>：表示 URL 地址。
+    4. <number>：表示数值，可以是整数或小数。
+    5. <integer>：表示整数值。
+    6. <percentage>：表示百分比值。
+    7. <angle>：表示角度值，如度（deg）、弧度（rad）等。
+    8. <time>：表示时间值，如秒（s）、毫秒（ms）等。
+    这些语法属性可以帮助定义自定义属性的值的类型和格式。
+    */
+    @property --number {
+      syntax: '<number>';
+      inherits: false;
+      initial-value: 0;
+    }
+
+    .square {
+      margin: 100px;
+      width: 100px;
+      height: 100px;
+      background-color: hsl(var(--number), 100%, 50%);
+      position: relative;
+      animation: rotate 5s infinite linear;
+      animation-direction: alternate;
+    }
+
+    @keyframes rotate {
+      0% {
+        rotate: 0turn;
+        --number: 0;
+      }
+
+      100% {
+        rotate: 1turn;
+        --number: 360;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="square"></div>
+</body>
+
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script>
+    var baseTag = document.querySelector('base')
+    // baseTag.href = "http://testincimage.shinetour.com/inc/";
+    baseTag.setAttribute("href", "http://testincimage.shinetour.com/inc/");
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base href="http://testincimage.shinetour.com/inc/">
+  <title>图片墙</title>
+  <link defer rel="stylesheet" href="css/css1.css">
+  <script>
+    window.__unocss = {
+      rules: [],
+      // presets: [ ],
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@unocss/runtime"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/radash/12.1.0/radash.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="js/js1.js"></script>
+  <script defer src="js/js1 copy 2.js"></script>
+  <script defer src="js/js1 copy 3.js"></script>
+  <script defer src="js/js1 copy 4.js"></script>
+  <script defer src="js/js1 copy 5.js"></script>
+  <script defer src="js/js1 copy 6.js"></script>
+  <script defer src="js/js1 copy 7.js"></script>
+  <script defer src="js/js1 copy 8.js"></script>
+  <script defer src="js/js1 copy 9.js"></script>
+  <script defer src="js/js1 copy 10.js"></script>
+  <script defer src="js/js1 copy 11.js"></script>
+  <script defer src="js/js1 copy 12.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .images-wrap {
+      width: 475px;
+    }
+
+    ul {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      width: 475px;
+      margin-block: 2px;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    li {
+      flex: 0 0 75px;
+      height: 40px;
+      line-height: 40px;
+      font-size: 30px;
+      background-color: cyan;
+      list-style: none;
+      text-align: center;
+    }
+
+    /* 滑块 */
+    datalist {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      writing-mode: vertical-lr;
+      width: 400px;
+    }
+
+    option {
+      padding: 0;
+    }
+
+    input[type="range"] {
+      width: 400px;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="space-y-20px ml-50px" x-data="dropdown">
+    <div class="ctr-wrap">
+      <div>
+        <h3>缩放率x</h3>
+        <input type="range" min="-100" max="100" value="70" class="slider" id="mySliderX" list="tickmarks" step="10">
+        <datalist id="tickmarks">
+          <template x-for="ctrOption in ctrOptions">
+            <option :value="ctrOption.value" :label="ctrOption.label"></option>
+          </template>
+        </datalist>
+      </div>
+      <div>
+        <h3>缩放率y</h3>
+        <input type="range" min="-100" max="100" value="70" class="slider" id="mySliderY" list="tickmarks" step="10">
+        <datalist id="tickmarks">
+          <template x-for="ctrOption in ctrOptions">
+            <option :value="ctrOption.value" :label="ctrOption.label"></option>
+          </template>
+        </datalist>
+      </div>
+    </div>
+    <div class="">
+      <h3>HTML</h3>
+      <div class="images-wrap">
+        <template x-for="i in 4">
+          <ul>
+            <template x-if="i%2==1">
+              <template x-for="j in 6">
+                <li x-text="j"></li>
+              </template>
+            </template>
+            <template x-if="i%2==0">
+              <template x-for="j in 7">
+                <li x-text="j"></li>
+              </template>
+            </template>
+          </ul>
+        </template>
+      </div>
+    </div>
+    <div id="canvas-wrap">
+      <h3>CANVAS</h3>
+      <canvas id="canvas"></canvas>
+    </div>
+  </div>
+
+  <script src="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/html2canvas/1.4.1/html2canvas.js" type="application/javascript"></script>
+
+  <script>
+    var stepCount = 10
+    var ctrOptions = new Array(stepCount + 1).fill(1).map((item, index) => {
+      var i = index - (stepCount / 2)
+      var val = (200 / stepCount) * i
+      return {
+        value: val,
+        label: val ? val + '%' : val
+      }
+    })
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('dropdown', () => ({
+        ctrOptions: ctrOptions,
+        open: false,
+        toggle() {
+          this.open = !this.open
+        },
+      }))
+    })
+
+    var $canvas = document.querySelector('#canvas')
+    var image;
+    var rateX = 1
+    var rateY = 0.7
+
+    var main = radash.debounce({ delay: 300 }, () => {
+      html2canvas(document.querySelector('.images-wrap')).then(function (canvas) {
+        image = canvas;
+        $canvas.width = canvas.width;
+        $canvas.height = canvas.height;
+        drawNew()
+      })
+    })
+
+    setTimeout(() => {
+      const sliderX = document.getElementById('mySliderX');
+      sliderX.value = rateX * 100
+      sliderX.oninput = function () {
+        rateX = this.value / 100
+        main()
+      }
+      const sliderY = document.getElementById('mySliderY');
+      sliderY.value = rateY * 100
+      sliderY.oninput = function () {
+        rateY = this.value / 100
+        main()
+      }
+      main()
+    }, 50)
+
+    function drawNew() {
+      const ctx = $canvas.getContext("2d");
+
+      scaleY(ctx)
+
+      var imageCtx = image.getContext("2d")
+      imageCtx.resetTransform();
+      imageCtx.clearRect(0, 0, $canvas.width, $canvas.height);
+      imageCtx.drawImage($canvas, 0, 0, $canvas.width, $canvas.height, 0, 0, $canvas.width, $canvas.height);
+
+      scaleX(ctx)
+    }
+
+    function scaleX(ctx) {
+      // 左右两点和中间点位于同一个圆上，根据三点坐标可以求出圆心和半径
+      ctx.clearRect(0, 0, $canvas.width, $canvas.height)
+      if (rateX == 1) {
+        ctx.drawImage(image, 0, 0, $canvas.width, $canvas.height);
+        return
+      }
+      var point1 = { x: 0, y: 0 }
+      var point2 = { x: 0, y: $canvas.height - 1 }
+      var point3 = { x: $canvas.width * (1 - rateX) / 2, y: ($canvas.height - 1) / 2 }
+      let circle = calculateCircleCenter(point1, point2, point3);
+
+
+      for (let index = 0; index < $canvas.height; index++) {
+        // 根据当前y坐标获取x坐标
+        var x = findXCoordinates(circle.x, circle.y, circle.radius, index)[0]
+        ctx.drawImage(image, 0, index, $canvas.width, 1, x, index, $canvas.width - (2 * x), 1);
+      }
+    }
+
+    function scaleY(ctx) {
+      // 左右两点和中间点位于同一个圆上，根据三点坐标可以求出圆心和半径
+      ctx.clearRect(0, 0, $canvas.width, $canvas.height)
+      if (rateY == 1) {
+        ctx.drawImage(image, 0, 0, $canvas.width, $canvas.height);
+        return
+      }
+      var point1 = { x: 0, y: 0 }
+      var point2 = { x: $canvas.width - 1, y: 0 }
+      var point3 = { x: ($canvas.width - 1) / 2, y: $canvas.height * (1 - rateY) / 2 }
+      let circle = calculateCircleCenter(point1, point2, point3);
+
+      for (let index = 0; index < $canvas.width; index++) {
+        // 根据当前x坐标获取y坐标
+        var y = findYCoordinates(circle.x, circle.y, circle.radius, index)[0]
+        ctx.drawImage(image, index, 0, 1, $canvas.height, index, y, 1, $canvas.height - (2 * y));
+      }
+    }
+
+    // 三点获取圆心和半径
+    function calculateCircleCenter(point1, point2, point3) {
+      let x1 = point1.x, y1 = point1.y;
+      let x2 = point2.x, y2 = point2.y;
+      let x3 = point3.x, y3 = point3.y;
+
+      let A = x2 - x1;
+      let B = y2 - y1;
+      let C = x3 - x1;
+      let D = y3 - y1;
+      let E = A * (x1 + x2) + B * (y1 + y2);
+      let F = C * (x1 + x3) + D * (y1 + y3);
+      let G = 2 * (A * (y3 - y2) - B * (x3 - x2));
+
+      let centerX = (D * E - B * F) / G;
+      let centerY = (A * F - C * E) / G;
+
+      let radius = Math.sqrt((x1 - centerX) ** 2 + (y1 - centerY) ** 2);
+
+      return { x: centerX, y: centerY, radius: radius };
+    }
+
+    // 根据x坐标获取y坐标
+    function findYCoordinates(cx, cy, r, x) {
+      // 首先检查x是否在圆的边界内或边界上  
+      if (Math.abs(x - cx) > r) {
+        throw new Error('The given x coordinate is outside the circle.');
+      }
+
+      // 使用圆的方程求解y  
+      let ySquared = r * r - (x - cx) * (x - cx);
+      if (ySquared < 0) {
+        // 这种情况实际上不应该发生，除非x坐标计算有误或半径为负数  
+        throw new Error('The square of y should not be negative.');
+      }
+
+      // 因为y可能是正或负，所以我们需要考虑两个解  
+      let y1 = Math.sqrt(ySquared) + cy;
+      let y2 = -Math.sqrt(ySquared) + cy;
+
+      // 返回一个包含两个y坐标的数组  
+      return [y1, y2];
+    }
+
+    // 根据y坐标获取x坐标
+    function findXCoordinates(cx, cy, r, y) {
+      // 首先检查x是否在圆的边界内或边界上  
+      if (Math.abs(y - cy) > r) {
+        throw new Error('The given y coordinate is outside the circle.');
+      }
+
+      // 使用圆的方程求解y  
+      let ySquared = r * r - (y - cy) * (y - cy);
+      if (ySquared < 0) {
+        // 这种情况实际上不应该发生，除非x坐标计算有误或半径为负数  
+        throw new Error('The square of y should not be negative.');
+      }
+
+      // 因为y可能是正或负，所以我们需要考虑两个解  
+      let x1 = Math.sqrt(ySquared) + cx;
+      let x2 = -Math.sqrt(ySquared) + cx;
+
+      // 返回一个包含两个y坐标的数组  
+      return [x1, x2];
+    }  
+  </script>
+</body>
+
+</html>

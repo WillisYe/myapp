@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<style>
+  #example {
+    width: 350px;
+    height: 350px;
+    --stripe-count: 13;
+    --stripe-color: #000 #fff;
+    --stripe-radius: 300;
+  }
+
+  .multi-border {
+    background-color: cyan;
+    background-image: paint(circle-stripe);
+  }
+</style>
+<div id=example class=multi-border></div>
+<script>
+  [
+    '--stripe-radius',
+    '--stripe-count',
+  ].map((name) => {
+    CSS.registerProperty({
+      name: name,
+      syntax: '<number>',
+      inherits: false,
+      initialValue: '13',
+    });
+  });
+  [
+    '--stripe-color',
+  ].map((name) => {
+    CSS.registerProperty({
+      name: name,
+      syntax: '<color>+',
+      inherits: false,
+      initialValue: 'currentcolor',
+    });
+  });
+  if (location.protocol === 'http:' && location.hostname !== 'localhost')
+    location.protocol = 'https:';
+  if ('paintWorklet' in CSS) {
+    CSS.paintWorklet.addModule('circle-stripe.js');
+  } else {
+    document.body.innerHTML = 'You need support for <a href="https://drafts.css-houdini.org/css-paint-api/">CSS Paint API</a> to view this demo :(';
+  }
+</script>

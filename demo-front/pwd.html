@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    /* 
+    密码规则
+        最长字符	20 
+        最短字符	8 
+        最多连续重复字符	6 
+        允许使用特殊字符	～ @ # _ * % / . + : ; = $ 
+        禁用连续字符（包含）	1234、abcd、qwer、4321 
+        字符种类（至少包含两种）	特殊字符、大小写子母、数字  */
+    function validatePassword(password) {
+      // 检查密码长度
+      if (password.length < 8 || password.length > 20) {
+        return false;
+      }
+
+      // 检查是否包含超过6个连续重复字符
+      for (let i = 0; i < password.length - 6; i++) {
+        if (password[i] === password[i + 1] && password[i] === password[i + 2] && password[i] === password[i + 3] && password[i] === password[i + 4] && password[i] === password[i + 5]) {
+          return false;
+        }
+      }
+
+      // 允许使用特殊字符	～ @ # _ * % / . + : ; = $ 
+      var Specialcharacter = password.replace(/[a-zA-Z\d]/g, '')
+      if (/[^～@#_*%/.+:;=$]/.test(Specialcharacter)) {
+        return false
+      }
+
+      // 检查是否包含禁用的连续字符
+      const forbiddenSequences = ['1234', 'abcd', 'qwer', '4321'];
+      if (forbiddenSequences.some(sequence => password.includes(sequence))) {
+        return false;
+      }
+
+      // 检查是否包含至少两种字符种类
+      const categories = [
+        /[a-z]/, // 小写字母
+        /[A-Z]/, // 大写字母
+        /\d/,     // 数字
+        /[～@#_*%/.+:;=$]/,     // 特殊字符
+      ];
+
+      if (categories.filter(category => category.test(password)).length < 2) {
+        return false;
+      }
+
+      return true;
+    }
+
+    // 测试密码是否合法
+    const password1 = "Abcdefg123@";
+    const password2 = "12345678";
+    console.log(validatePassword(password1)); // 输出 true
+    console.log(validatePassword(password2)); // 输出 false
+  </script>
+</body>
+
+</html>

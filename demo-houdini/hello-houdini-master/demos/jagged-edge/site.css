@@ -1,0 +1,82 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0 20px;
+    background-image: linear-gradient(to bottom right, #74ebd5, #acb6e5);
+    font: 1rem/1.25 'Mukta Mahee', sans-serif;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 20px;
+    align-items: center;
+    height: 100%;
+}
+
+.slot {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    height: 200px;
+    border: 2px solid #000;
+}
+
+.jagged {
+    background: paint(jagged-edge);
+
+    position: absolute;
+    top: 30%;
+    bottom: 0;
+    width: 100%;
+    color: #fff;
+}
+
+.slot:nth-child(1) .jagged {
+    --tooth-width: 50px;
+    --tooth-height: 25px;
+}
+
+.slot:nth-child(2) .jagged {
+    --tooth-width: 2rem;
+    --tooth-height: 3rem;
+}
+
+.slot:nth-child(3) .jagged {
+    --tooth-width: calc(33vw - 31px);
+    --tooth-height: 2em;
+}
+
+.info {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
+
+.warning {
+    display: none;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    padding: 20px;
+    border-top: 4px dashed #e8590c;
+    background-color: #ffe8cc;
+    color: #e8590c;
+    text-align: center;
+}
+
+.no-support .warning {
+    display: block;
+}
+
+.warning .fas {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}

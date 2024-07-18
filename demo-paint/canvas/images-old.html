@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>图片墙</title>
+  <script>
+    window.__unocss = {
+      rules: [],
+      // presets: [ ],
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@unocss/runtime"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .images-wrap {
+      width: 925px;
+      border-left: 1px solid #000;
+      border-right: 1px solid #000;
+      padding: 5px 0;
+    }
+
+    ul {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      width: 925px;
+      margin-block: 2px;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    li {
+      flex: 0 0 150px;
+      height: 80px;
+      line-height: 80px;
+      font-size: 60px;
+      background-color: cyan;
+      list-style: none;
+      text-align: center;  
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="space-y-20px ml-50px">
+    <div class="">
+      <h3>HTML</h3>
+      <div class="images-wrap">
+        <ul>
+          <li>1</li>
+          <li>2</li>
+          <li>3</li>
+          <li>4</li>
+          <li>5</li>
+          <li>6</li>
+        </ul>
+        <ul>
+          <li>1</li>
+          <li>2</li>
+          <li>3</li>
+          <li>4</li>
+          <li>5</li>
+          <li>6</li>
+          <li>7</li>
+        </ul>
+        <ul>
+          <li>1</li>
+          <li>2</li>
+          <li>3</li>
+          <li>4</li>
+          <li>5</li>
+          <li>6</li>
+        </ul>
+      </div>
+    </div>
+    <div id="canvas1">
+      <h3>CANVAS</h3>
+    </div>
+  </div>
+
+  <script src="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/html2canvas/1.4.1/html2canvas.js" type="application/javascript"></script>
+  <script>
+    Array.prototype.padStart = function (targetLength, padding) {
+      const diff = targetLength - this.length;
+      if (diff <= 0) {
+        return this.slice(0);
+      }
+      return Array(diff).fill(padding).concat(this);
+    };
+
+    Array.prototype.padEnd = function (targetLength, padding) {
+      const diff = targetLength - this.length;
+      if (diff <= 0) {
+        return this.slice(0);
+      }
+      return this.concat(Array(diff).fill(padding));
+    };
+
+    setTimeout(() => {
+      draw()
+    }, 500)
+
+    function draw() {
+      html2canvas(document.querySelector('.images-wrap')).then(function (canvas) {
+        var ctx = canvas.getContext("2d");
+        var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+        var imageDataNew = arrayToImageData2(imageDataTo2DArray(imageData))
+        ctx.putImageData(imageDataNew, 0, 0);
+        document.querySelector('#canvas1').appendChild(canvas)
+      })
+    }
+
+    function imageDataTo2DArray(imageData) {
+      // 这个函数将传入的imageData对象转换为二维数组，其中每个子数组的长度为imageData.height，代表每列的像素数据。
+      const data = imageData.data;
+      const width = imageData.width;
+      const height = imageData.height;
+      const result = [];
+
+      for (let i = 0; i < width; i++) {
+        const row = [];
+        for (let j = 0; j < height; j++) {
+          const index = (j * width + i) * 4;
+          const pixel = [data[index], data[index + 1], data[index + 2], data[index + 3]];
+          row.push(pixel);
+        }
+        var rowNew = scaleColData(row, i, width)
+        result.push(rowNew);
+      }
+
+      return result;
+    }
+
+    function arrayToImageData2(arr) {
+      // 这个函数将传入的二维数组转换为imageData对象
+      const height = arr.length;
+      const width = arr[0].length;
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = width;
+      canvas.height = height;
+      const imageData = ctx.createImageData(height, width);
+
+      for (let i = 0; i < height; i++) {
+        for (let j = 0; j < width; j++) {
+          const index = (j * height + i) * 4;
+          imageData.data[index] = arr[i][j][0];
+          imageData.data[index + 1] = arr[i][j][1];
+          imageData.data[index + 2] = arr[i][j][2];
+          imageData.data[index + 3] = arr[i][j][3];
+        }
+      }
+
+      return imageData;
+    }
+
+    function scaleColData(colData, col, width) {
+      // 缩放列数组，每列缩放系数不同，越靠近中间缩放比例越大，靠近两边缩放系数越小，中间rateMax，两边1
+      // 目前缩放率是线性递减、递增，需改进算法，改为弧形，要用到三角函数，待完善
+      var rateMax = 0.7
+      var halfWidth = (width - 1) / 2
+      var rate = (1 - rateMax) * Math.abs(halfWidth - col) / halfWidth + rateMax
+
+      var compressedData = compressColumnPixels(colData, rate)
+      if (compressedData.length < colData.length) {
+        var end = Math.ceil((colData.length - compressedData.length) / 2)
+        compressedData = compressedData.padStart(colData.length - end, [255, 255, 255, 0])
+        compressedData = compressedData.padEnd(colData.length, [255, 255, 255, 0])
+      }
+      return compressedData
+    }
+
+    function compressColumnPixels(columnData, compressionRate) {
+      // 缩放算法可继续优化，待完善
+      const originalLength = columnData.length;
+      const compressedLength = Math.round(originalLength * compressionRate);
+      const compressedData = [];
+
+      for (let i = 0; i < compressedLength; i++) {
+        const startIdx = Math.floor(i / compressionRate);
+        const endIdx = Math.min(startIdx + 1, originalLength - 1);
+        let sumR = 0, sumG = 0, sumB = 0, sumA = 0, count = 0;
+
+        for (let j = startIdx; j <= endIdx; j++) {
+          sumR += columnData[j][0];
+          sumG += columnData[j][1];
+          sumB += columnData[j][2];
+          sumA += columnData[j][3];
+          count++;
+        }
+
+        const avgR = Math.round(sumR / count);
+        const avgG = Math.round(sumG / count);
+        const avgB = Math.round(sumB / count);
+        const avgA = Math.round(sumA / count);
+
+        compressedData.push([avgR, avgG, avgB, avgA]);
+      }
+
+      return compressedData;
+    }
+
+
+  </script>
+</body>
+
+</html>
