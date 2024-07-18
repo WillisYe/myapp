@@ -483,6 +483,7 @@ limitations under the License.
 
       // Ensure the WebAnimations polyfill is loaded.
       if (!window.webAnimations1) {
+        return loadScriptSync('https://raw.githubusercontent.com/web-animations/web-animations-js/dev/web-animations-next.dev.js').then(_export);
         return loadScriptSync('https://rawgit.com/web-animations/web-animations-js/master/web-animations-next.dev.js').then(_export);
       } else {
         return Promise.resolve(_export());

@@ -5,25 +5,37 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <script>
+    window.__unocss = {
+      rules: [],
+      // presets: [ ],
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@unocss/runtime"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
     .container {
       position: relative;
-      height: 2000px;
-      /* 你可以设置你需要的任何高度 */
       background-color: #f8f9fa;
     }
 
     .sticky-top {
       position: sticky;
-      top: 50px;
+      top: 0;
       /* 吸底元素距离顶部的距离 */
       background-color: #fff;
       padding: 10px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
+
     .sticky-bottom {
       position: sticky;
-      bottom: 50px;
+      bottom: 0;
       /* 吸底元素距离顶部的距离 */
       background-color: #fff;
       padding: 10px;
@@ -33,44 +45,28 @@
 </head>
 
 <body>
-  <div class="container">
-    <h1>1</h1>
-    <h1>2</h1>
-    <h1>3</h1>
-    <h1>4</h1>
-    <h1>5</h1>
-    <h1>6</h1>
-    <h1>7</h1>
-    <h1>8</h1>
-    <h1>9</h1>
-    <h1>10</h1>
+  <div class="container" x-data="dropdown">
     <div class="sticky-top">
       我是一个吸顶的元素！
     </div>
-    <h1>1</h1>
-    <h1>2</h1>
-    <h1>3</h1>
-    <h1>4</h1>
-    <h1>5</h1>
-    <h1>6</h1>
-    <h1>7</h1>
-    <h1>8</h1>
-    <h1>9</h1>
-    <h1>10</h1>
+    <template x-for="i in 30">
+      <h1 x-text="i"></h1>
+    </template>
     <div class="sticky-bottom">
       我是一个吸底的元素！
     </div>
-    <h1>1</h1>
-    <h1>2</h1>
-    <h1>3</h1>
-    <h1>4</h1>
-    <h1>5</h1>
-    <h1>6</h1>
-    <h1>7</h1>
-    <h1>8</h1>
-    <h1>9</h1>
-    <h1>10</h1>
   </div>
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('dropdown', () => ({
+        ctrOptions: ctrOptions,
+        open: false,
+        toggle() {
+          this.open = !this.open
+        },
+      }))
+    })
+  </script>
 </body>
 
 </html>

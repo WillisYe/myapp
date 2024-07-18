@@ -111,6 +111,8 @@ div:nth-of-type(4):hover {
 <script>
   if(!('layoutWorklet' in CSS)) {
     document.write('You need Custom Layout for this demo :(');
+  } else {
+    init();
   }
   function urlFromTag(sel) {
     const el = document.querySelector(sel);
@@ -123,5 +125,5 @@ div:nth-of-type(4):hover {
   async function init() {
     await CSS.layoutWorklet.addModule(urlFromTag("script[language='javascript+layout']"));
   }
-  init();
+  
 </script>
