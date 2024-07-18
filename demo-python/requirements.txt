@@ -2,3 +2,4 @@ requests
 click
 AES
 cookiejar
+Crypto

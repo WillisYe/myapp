@@ -23,3 +23,4 @@ for line in slopes:
     line['length'] = len(line['points'])
 
 print(slopes)
+print(json.dumps(slopes, indent=2))

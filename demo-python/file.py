@@ -2,12 +2,12 @@ import os
 from tkinter import Tk, filedialog
 
 
-def get_csv_filenames(folder_path):
-    csv_files = []
+def get_py_filenames(folder_path):
+    py_files = []
     for filename in os.listdir(folder_path):
-        if filename.endswith(".csv"):
-            csv_files.append(filename)
-    return csv_files
+        if filename.endswith(".py"):
+            py_files.append(filename)
+    return py_files
 
 
 def main():
@@ -20,8 +20,8 @@ def main():
         print("未选择文件夹。程序结束。")
         return
 
-    csv_filenames = get_csv_filenames(folder_path)
-    print("所有的 .csv 文件名：", csv_filenames)
+    py_filenames = get_py_filenames(folder_path)
+    print("所有的 .py 文件名：", py_filenames)
 
 
 if __name__ == "__main__":
