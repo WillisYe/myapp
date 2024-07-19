@@ -18,9 +18,9 @@ songName = []  # 列表存放歌曲名字
 songID1 = []  # 列表存放歌曲编号
 # 构造url
 for i in range(0, 1):
-    cur = list[0]
+    tit = "许巍"
     url = "http://www.9ku.com/geshou/1019.htm"    # 许巍
-    print('榜单名称', cur['tit'])
+    print('榜单名称', tit)
     req = request.Request(url, headers=header)
     data_html = request.urlopen(req).read().decode()
     # print(data_html)
