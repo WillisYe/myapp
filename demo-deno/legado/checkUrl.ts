@@ -1,4 +1,5 @@
 // deno run -A checkUrl.ts
+// sourceUrl耗时梳理
 import { ensureFile } from 'https://deno.land/std/fs/mod.ts';
 import { green, bold } from 'https://deno.land/std/fmt/colors.ts';
 import jsonData from './.input/result.json' assert { type: 'json' };
