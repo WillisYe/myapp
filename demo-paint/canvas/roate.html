@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Swirl Effect 图片液化旋转</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <input type="file" id="upload" accept="image/*">
+    <canvas id="canvas" width="800" height="600"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const upload = document.getElementById('upload');
+        let img = new Image();
+
+        upload.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        img.onload = () => {
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            applySwirlEffect();
+        };
+
+        function applySwirlEffect() {
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = Math.min(centerX, centerY) * 0.8;
+
+            for (let y = 0; y < canvas.height; y++) {
+                for (let x = 0; x < canvas.width; x++) {
+                    const dx = x - centerX;
+                    const dy = y - centerY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < radius) {
+                        const angle = Math.atan2(dy, dx) + (distance / radius) * Math.PI; // 旋涡效果
+                        const newX = Math.cos(angle) * distance + centerX;
+                        const newY = Math.sin(angle) * distance + centerY;
+
+                        const srcIndex = (y * canvas.width + x) * 4;
+                        const destIndex = (Math.round(newY) * canvas.width + Math.round(newX)) * 4;
+
+                        if (newX >= 0 && newX < canvas.width && newY >= 0 && newY < canvas.height) {
+                            data[destIndex] = data[srcIndex];     // R
+                            data[destIndex + 1] = data[srcIndex + 1]; // G
+                            data[destIndex + 2] = data[srcIndex + 2]; // B
+                            data[destIndex + 3] = data[srcIndex + 3]; // A
+                        }
+                    }
+                }
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+        }
+    </script>
+</body>
+</html>
