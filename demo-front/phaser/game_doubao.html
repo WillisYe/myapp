@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phaser Nail and Falling Object Demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <script>
+        var game;
+
+        var config = {
+            type: Phaser.AUTO,
+            width: 800,
+            height: 600,
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    gravity: { y: 500 },
+                    debug: false
+                }
+            },
+            scene: {
+                preload: preload,
+                create: create,
+                update: update
+            }
+        };
+
+        function preload() {
+            // 加载钉子和物体的图片
+            this.load.image('nail', 'nail.jpeg');
+            this.load.image('object', 'object.jpeg');
+        }
+
+        function create() {
+            // 创建物体精灵并设置其物理属性
+            this.object = this.physics.add.sprite(200, 200, 'object');
+            this.object.body.setAllowGravity(false);
+
+            // 创建钉子精灵并设置其物理属性
+            this.nail = this.physics.add.sprite(50, 50, 'nail');
+            // this.nail.body.setImmovable();
+            this.nail.body.setAllowGravity(false);
+
+            // 创建物理约束，将物体固定在钉子上
+            // this.constraint = this.physics.add.constraint(this.object, this.nail, 0, 0);
+
+            // 使钉子可交互
+            this.nail.setInteractive();
+
+            // 当点击钉子时，移除约束使物体掉落
+            this.nail.on('pointerdown', function () {
+                // this.physics.world.removeConstraint(this.constraint);
+                this.object.body.setAllowGravity(true);
+            }, this);
+        }
+
+        function update() {
+        }
+
+        game = new Phaser.Game(config);
+    </script>
+</body>
+
+</html>

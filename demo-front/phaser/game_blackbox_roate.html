@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Nail Effect Demo</title>
+    <script src="phaser.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="game"></div>
+    <script>
+        const game = new Phaser.Game({
+            type: Phaser.CANVAS,
+            parent: 'game',
+            width: 800,
+            height: 600,
+            scene: {
+                preload: preload,
+                create: create,
+                update: update
+            }
+        });
+
+        let object;
+        let nail1;
+        let nail2;
+        let isNail1Pulled = false;
+        let isNail2Pulled = false;
+        let rotationCenter;
+        let rotationSpeed = 5;
+
+        function preload() {
+            this.load.image('object', 'object.jpeg');
+            this.load.image('nail', 'nail.jpeg');
+        }
+
+        function create() {
+            object = this.add.sprite(400, 300, 'object');
+            object.setScale(0.5);
+
+            object1 = this.add.sprite(400, 450, 'object');
+            object1.setScale(0.5);
+
+            nail1 = this.add.sprite(350, 250, 'nail');
+            nail1.setScale(0.5);
+            nail1.setInteractive();
+
+            nail2 = this.add.sprite(450, 250, 'nail');
+            nail2.setScale(0.5);
+            nail2.setInteractive();
+
+            rotationCenter = new Phaser.Math.Vector2(nail2.x, nail2.y);
+
+            this.input.on('pointerdown', (pointer) => {
+                if (nail1.getBounds().contains(pointer.x, pointer.y)) {
+                    isNail1Pulled = true;
+                    nail1.destroy();
+                    console.log(nail1)
+                    console.log(nail2)
+                    console.log(nail1.active)
+                    console.log(nail2.active)
+                } else if (nail2.getBounds().contains(pointer.x, pointer.y)) {
+                    isNail2Pulled = true;
+                    nail2.destroy();
+                    console.log(nail1)
+                    console.log(nail2)
+                    console.log(nail1.visible)
+                    console.log(nail2.visible)
+                }
+            });
+        }
+
+        function update(time, delta) {
+            if (isNail1Pulled && !isNail2Pulled) {
+                object.angle += rotationSpeed;
+                object.x = rotationCenter.x + Math.cos(object.angle * Phaser.Math.DEG_TO_RAD) * 50;
+                object.y = rotationCenter.y + Math.sin(object.angle * Phaser.Math.DEG_TO_RAD) * 50;
+                if (Math.abs(object.angle) > 30) {
+                    rotationSpeed = -rotationSpeed;
+                }
+                if (Math.abs(object.angle) < 1) {
+                    object.angle = 0;
+                    rotationSpeed = 5;
+                }
+            } else if (isNail2Pulled && !isNail1Pulled) {
+                object.angle -= rotationSpeed;
+                if (Math.abs(object.angle) > 30) {
+                    rotationSpeed = -rotationSpeed;
+                }
+                if (Math.abs(object.angle) < 1) {
+                    object.angle = 0;
+                    rotationSpeed = 5;
+                }
+            } else if (isNail1Pulled && isNail2Pulled) {
+                object.y += 5;
+                if (object.y > 600) {
+                    object.y = 600;
+                    isNailPulled = false;
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Phaser Nail and Box Demo</title>  
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>  
+    <style>  
+        body { margin: 0; }  
+        canvas { display: block; }  
+    </style>  
+</head>  
+<body>  
+    <script>  
+        var config = {  
+            type: Phaser.AUTO,  
+            width: 800,  
+            height: 600,  
+            physics: {  
+                default: 'arcade',  
+                arcade: {  
+                    gravity: { y: 300 },  
+                    debug: false  
+                }  
+            },  
+            scene: {  
+                preload: preload,  
+                create: create  
+            }  
+        };  
+  
+        var game = new Phaser.Game(config);  
+  
+        function preload() {  
+            // 假设资源放在与HTML文件相同的目录下  
+            this.load.image('box', 'object.jpeg');  
+            this.load.image('nail', 'nail.jpeg');  
+        }  
+  
+        function create() {  
+            // 设置物理世界的边界  
+            this.physics.world.setBounds(0, 0, 800, 600);  
+  
+            // 添加钉子并设置其为可交互对象  
+            this.nail = this.physics.add.sprite(400, 100, 'nail').setInteractive();  
+  
+            // 添加箱子，并暂时禁用其物理碰撞  
+            this.box = this.physics.add.sprite(400, 120, 'box');  
+            this.box.body.enable = false; // 另一种禁用物理碰撞的方式  
+  
+            // 监听钉子的点击事件  
+            this.input.on('gameobjectdown', function (pointer, gameObject) {  
+                if (gameObject === this.nail) {  
+                    this.removeNail();  
+                }  
+            }, this);  
+        }  
+  
+        function removeNail() {  
+            // 销毁钉子  
+            this.nail.destroy();  
+  
+            // 启用箱子的物理碰撞，使其开始下落  
+            this.box.body.enable = true;  
+            this.box.body.setVelocity(0); // 可选：重置箱子的速度  
+            this.box.body.setAllowGravity(true); // 确保重力被应用  
+        }  
+  
+        // 游戏实例创建  
+        var game = new Phaser.Game(config);  
+    </script>  
+</body>  
+</html>

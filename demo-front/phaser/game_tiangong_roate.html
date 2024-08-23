@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phaser Nail and Falling Object Demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="phaser.min.js"></script>
+    <script>
+        class GameScene extends Phaser.Scene {
+            constructor() {
+                super('GameScene');
+            }
+
+            preload() {
+                this.load.image('object', 'object.jpeg');
+                this.load.image('nail', 'nail.jpeg');
+            }
+
+            create() {
+                this.physics.world.setBoundsCollision(true, true, true, false);
+
+                this.objects = this.add.group();
+                this.objects.add(this.physics.add.image(400, 150, 'object'));
+                this.objects.add(this.physics.add.image(400, 400, 'object'));
+
+                this.objects.children.iterate(object => {
+                    object.setImmovable(false);
+                    object.setBounce(0.5);
+                    object.setCollideWorldBounds(true);
+                });
+
+                this.nails = this.add.group();
+                this.nails.add(this.physics.add.image(300, 50, 'nail'));
+                this.nails.add(this.physics.add.image(500, 50, 'nail'));
+                this.nails.add(this.physics.add.image(300, 300, 'nail'));
+                this.nails.add(this.physics.add.image(500, 300, 'nail'));
+
+                this.nails.children.iterate(nail => {
+                    nail.body.allowGravity = false; // 确保不受到重力影响
+                    nail.setImmovable(true);
+                    nail.setBounce(1);
+                    nail.setCollideWorldBounds(true);
+                });
+
+                this.physics.add.collider(this.objects, this.nails, (obj, nail) => {
+                    obj.body.allowGravity = false; // 物体接触钉子时，禁用重力
+                    obj.setVelocity(0);
+                });
+
+                this.physics.add.collider(this.objects, this.objects, (obj1, obj2) => {
+                    obj1.body.allowGravity = false; // 物体之间碰撞时，禁用重力
+                    obj1.setVelocity(0);
+                    obj2.body.allowGravity = false; // 物体之间碰撞时，禁用重力
+                    obj2.setVelocity(0);
+                });
+
+                this.input.on('pointerdown', (pointer) => {
+                    let hitNail = this.nails.getChildren().find(nail => nail.getBounds().contains(pointer.x, pointer.y));
+                    if (hitNail) {
+                        hitNail.destroy();
+
+                        // 获取右上角钉子的位置
+                        let rightNail = this.nails.getChildren().find((nail) => {
+                            return nail.x > this.sys.canvas.width / 2;
+                        });
+
+                        // if (Phaser.Geom.Intersects.RectangleToRectangle(body1.getBounds(), body2.getBounds())) {
+                        //     console.log('两个物体相交');
+                        // }
+
+                        this.objects.getChildren().forEach((obj) => {
+                            obj.body.angularVelocity = 100;
+                            this.physics.overlap(obj, this.nails, () => {
+                                obj.body.angularVelocity = 0;
+                            });
+                        });
+
+
+
+                        // //拔掉左上角钉子时，对象向右旋转，以右上角钉子为中心旋转
+                        // if (hitNail.x < this.sys.canvas.width / 2) {
+                        //     this.objects.getChildren().forEach((obj) => {
+                        //         obj.body.angularVelocity = 100; // 设置对象的旋转速度
+                        //         obj.body.rotationPoint.x = rightNail.x; // 设置对象的旋转中心点
+                        //         obj.body.rotationPoint.y = rightNail.y; // 设置对象的旋转中心点
+                        //     });
+                        // }
+                        // //拔掉右上角钉子时对象向左旋转，以左上角钉子为中心旋转
+                        // else {
+                        //     this.objects.getChildren().forEach((obj) => {
+                        //         obj.body.angularVelocity = -100; // 设置对象的旋转速度
+                        //         obj.body.rotationPoint.x = hitNail.x; // 设置对象的旋转中心点
+                        //         obj.body.rotationPoint.y = hitNail.y; // 设置对象的旋转中心点
+                        //     });
+                        // }
+
+                        this.objects.children.iterate(object => {
+                            object.body.allowGravity = true; // 移除钉子时，物体开始受到重力影响
+                            object.setVelocity(0);
+                        });
+                    }
+                });
+            }
+
+            update() {
+                // 更新逻辑
+            }
+        }
+
+        const config = {
+            type: Phaser.AUTO,
+            width: 800,
+            height: 600,
+            scene: [GameScene],
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    gravity: { y: 300 }
+                }
+            }
+        };
+
+        const game = new Phaser.Game(config);
+
+
+
+    </script>
+</body>
+
+</html>

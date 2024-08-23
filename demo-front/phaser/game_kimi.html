@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Phaser Nails Demo</title>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <script>
+        class NailsDemo extends Phaser.Scene {
+            constructor() {
+                super({ key: 'nailsDemo' });
+            }
+
+            preload() {
+                this.load.image('nail', 'nail.jpeg'); // 确保你有这个钉子的图片
+                this.load.image('block', 'object.jpeg'); // 确保你有这个物体的图片
+            }
+
+            create() {
+                // 创建物体
+                this.block = this.physics.add.sprite(400, 250, 'block');
+                this.block.setImmovable(true); // 物体初始也不可移动
+                // this.block.body.allowGravity = false; // 确保钉子不受到重力影响
+
+                // 创建钉子
+                this.nail = this.physics.add.sprite(400, 300, 'nail');
+                this.nail.setImmovable(true); // 钉子不可移动
+                // this.nail.body.allowGravity = false; // 确保钉子不受到重力影响
+
+                // 物体和钉子之间的约束
+                // this.pin = this.physics.add.pin(this.block.body, this.nail.body, 0, 0);
+
+                // 监听点击事件
+                this.input.on('pointerdown', function (pointer) {
+                    console.log('%c pointerdown', 'color:red; background:yellow;')
+                    // this.pin.disableBody(true, true); // 拔掉钉子，物体可以下落
+                    this.block.setImmovable(false); // 物体可以移动
+                    this.block.allowGravity = true; // 物体可以移动
+                }, this);
+            }
+
+            update() {
+                // 简单的物理更新
+                this.physics.world.step();
+            }
+        }
+
+        const config = {
+            type: Phaser.AUTO,
+            width: 800,
+            height: 600,
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    gravity: { y: 200 }
+                }
+            },
+            scene: NailsDemo
+        };
+
+        const game = new Phaser.Game(config);</script>
+</body>
+
+</html>

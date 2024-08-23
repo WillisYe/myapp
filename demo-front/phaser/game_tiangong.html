@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phaser Nail and Falling Object Demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <script>
+        class GameScene extends Phaser.Scene {
+            constructor() {
+                super('GameScene');
+            }
+
+            preload() {
+                this.load.image('object', 'object.jpeg');
+                this.load.image('nail', 'nail.jpeg');
+            }
+
+            create() {
+                this.physics.world.setBoundsCollision(true, true, true, false);
+
+                this.object = this.physics.add.image(400, 200, 'object');
+                this.object.setCollideWorldBounds(true);
+                this.object.setBounce(0.5);
+                this.object.body.allowGravity = false; // 禁用重力
+
+                this.nails = this.add.group();
+                this.nails.add(this.physics.add.image(300, 300, 'nail'));
+                this.nails.add(this.physics.add.image(500, 300, 'nail'));
+
+                this.nails.children.iterate(nail => {
+                    nail.body.allowGravity = false; // 确保钉子不受到重力影响
+                    nail.setImmovable(true);
+                    nail.setBounce(1);
+                    nail.setCollideWorldBounds(true);
+                });
+
+                this.physics.add.collider(this.object, this.nails, (obj, nail) => {
+                    obj.body.allowGravity = false; // 物体接触钉子时，禁用重力
+                    obj.setVelocity(0);
+                });
+
+                this.input.on('pointerdown', (pointer) => {
+                    let hitNail = this.nails.getChildren().find(nail => nail.getBounds().contains(pointer.x, pointer.y));
+                    if (hitNail) {
+                        hitNail.destroy();
+                        this.object.body.allowGravity = true; // 移除钉子时，物体开始受到重力影响
+                        this.object.setVelocity(0);
+                    }
+                });
+            }
+
+            update() {
+                // 更新逻辑
+            }
+        }
+
+        const config = {
+            type: Phaser.AUTO,
+            width: 800,
+            height: 600,
+            scene: [GameScene],
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    gravity: { y: 300 }
+                }
+            }
+        };
+
+        const game = new Phaser.Game(config);
+    </script>
+</body>
+
+</html>

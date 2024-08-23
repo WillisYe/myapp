@@ -1,0 +1,61 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head> 
+    <meta charset="UTF-8"> 
+    <title>Phaser Nail Demo</title>
+    <style>
+        body { margin: 0; padding: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body> 
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <script>
+        var config = { 
+            type: Phaser.AUTO, 
+            width: 800,
+            height: 600,
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    gravity: { y: 300 },
+                    debug: false 
+                }
+            }, 
+            scene: {
+                preload: preload,
+                create: create,
+                update: update
+            }
+        }; 
+ 
+        var game = new Phaser.Game(config); 
+ 
+        function preload ()
+        { 
+            this.load.image('ball', 'object.jpeg'); // 替换成你的小球图片路径 
+            this.load.image('nail', 'nail.jpeg'); // 替换成你的钉子图片路径
+        } 
+ 
+        function create ()
+        { 
+            this.ball = this.physics.add.sprite(400, 300, 'ball'); 
+            this.ball.setCollideWorldBounds(true); 
+ 
+            this.nail = this.physics.add.sprite(400, 200, 'nail'); 
+            this.nail.setInteractive(); 
+ 
+            this.physics.add.collider(this.ball, this.nail); 
+ 
+            this.nail.on('pointerdown', function (pointer) {
+                this.nail.disableBody(true, true);
+            }, this);
+        } 
+ 
+        function update ()
+        { 
+            // 更新逻辑，如果有的话
+        }
+    </script>
+</body>
+</html>

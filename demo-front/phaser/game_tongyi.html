@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Phaser Nail Demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <script>
+        // 初始化游戏配置
+        const config = {
+            type: Phaser.AUTO,
+            width: 800,
+            height: 600,
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    gravity: { y: 300 },
+                    debug: false
+                }
+            },
+            scene: {
+                preload: preload,
+                create: create,
+                update: update
+            }
+        };
+
+        // 创建游戏实例
+        const game = new Phaser.Game(config);
+
+        let nails;
+        let objects;
+        let ground;
+        let cursors;
+
+        function preload() {
+            // 加载资源
+            this.load.image('nail', 'nail.jpeg');
+            this.load.image('object', 'object.jpeg');
+        }
+
+        function create() {
+            // 创建地面
+            ground = this.physics.add.staticGroup();
+            ground.create(400, 550, 'ground').setScale(2).refreshBody();
+
+            // 创建钉子
+            nails = this.physics.add.group({
+                key: 'nail',
+                allowGravity: false,
+                immovable: true
+            });
+            nails.create(300, 400, 'nail').setImmovable(true);
+            nails.create(500, 400, 'nail').setImmovable(true);
+
+            // 创建物体
+            objects = this.physics.add.group({
+                key: 'object',
+                allowGravity: true,
+                bounceY: 0.2
+            });
+            const object = objects.create(400, 300, 'object').setBounce(1).setCollideWorldBounds(true);
+
+            // 设置碰撞检测
+            this.physics.add.collider(objects, ground);
+            this.physics.add.collider(nails, objects, onNailCollision, null, this);
+
+            // 添加键盘控制
+            cursors = this.input.keyboard.createCursorKeys();
+        }
+
+        function update(time, delta) {
+            if (cursors.space.isDown) {
+                // 拔钉子
+                nails.getChildren().forEach(nail => {
+                    nail.destroy();
+                });
+            }
+
+            // 如果所有钉子都被拔掉了，则物体可以自由下落
+            if (nails.countActive() === 0) {
+                objects.children.iterate(child => {
+                    child.body.allowGravity = true;
+                });
+            }
+        }
+
+        function onNailCollision(object, nail) {
+            // 钉子与物体接触时，限制物体的垂直移动
+            object.body.allowGravity = false;
+            object.setVelocityY(0);
+        }
+    </script>
+</body>
+
+</html>

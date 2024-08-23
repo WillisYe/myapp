@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Nail Effect Demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.50.1/dist/phaser.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="game"></div>
+    <script>
+        const game = new Phaser.Game({
+            type: Phaser.CANVAS,
+            parent: 'game',
+            width: 800,
+            height: 600,
+            scene: {
+                preload: preload,
+                create: create,
+                update: update
+            }
+        });
+
+        let nail;
+        let object;
+        let isNailPulled = false;
+
+        function preload() {
+            this.load.image('nail', 'nail.jpeg');
+            this.load.image('object', 'object.jpeg');
+        }
+
+        function create() {
+            object = this.add.sprite(400, 250, 'object');
+            object.setScale(0.5);
+
+            nail = this.add.sprite(400, 300, 'nail');
+            nail.setScale(0.5);
+            nail.setInteractive();
+
+            this.input.on('pointerdown', (pointer) => {
+                if (nail.getBounds().contains(pointer.x, pointer.y)) {
+                    nail.destroy()
+                    isNailPulled = true;
+                }
+            });
+        }
+
+        function update(time, delta) {
+            if (isNailPulled) {
+                object.y += 5;
+                if (object.y > 600) {
+                    object.y = 600;
+                    isNailPulled = false;
+                    // object.body = this.physics.add.body(object, 0, 0, 0, 0);
+                    // object.body.gravity.y = 1000;
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
