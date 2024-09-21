@@ -31,8 +31,8 @@
                 this.physics.world.setBoundsCollision(true, true, true, false);
 
                 this.objects = this.add.group();
-                this.objects.add(this.physics.add.image(400, 150, 'object'));
-                this.objects.add(this.physics.add.image(400, 400, 'object'));
+                this.objects.add(this.physics.add.sprite(400, 150, 'object'));
+                this.objects.add(this.physics.add.sprite(400, 400, 'object'));
 
                 this.objects.children.iterate(object => {
                     object.setImmovable(false);
@@ -41,10 +41,10 @@
                 });
 
                 this.nails = this.add.group();
-                this.nails.add(this.physics.add.image(300, 50, 'nail'));
-                this.nails.add(this.physics.add.image(500, 50, 'nail'));
-                this.nails.add(this.physics.add.image(300, 300, 'nail'));
-                this.nails.add(this.physics.add.image(500, 300, 'nail'));
+                this.nails.add(this.physics.add.sprite(300, 50, 'nail'));
+                this.nails.add(this.physics.add.sprite(500, 50, 'nail'));
+                this.nails.add(this.physics.add.sprite(300, 300, 'nail'));
+                this.nails.add(this.physics.add.sprite(500, 300, 'nail'));
 
                 this.nails.children.iterate(nail => {
                     nail.body.allowGravity = false; // 确保不受到重力影响
@@ -70,40 +70,29 @@
                     if (hitNail) {
                         hitNail.destroy();
 
-                        // 获取右上角钉子的位置
-                        let rightNail = this.nails.getChildren().find((nail) => {
-                            return nail.x > this.sys.canvas.width / 2;
-                        });
-
-                        // if (Phaser.Geom.Intersects.RectangleToRectangle(body1.getBounds(), body2.getBounds())) {
-                        //     console.log('两个物体相交');
-                        // }
-
-                        this.objects.getChildren().forEach((obj) => {
-                            obj.body.angularVelocity = 100;
-                            this.physics.overlap(obj, this.nails, () => {
-                                obj.body.angularVelocity = 0;
+                        this.objects.getChildren().forEach((obj, index) => {
+                            var count = 0
+                            var nail
+                            this.physics.overlap(obj, this.nails, (obj, _nail) => {
+                                nail = _nail
+                                count++
                             });
+                            if (count == 1 && obj.angle == 0) {
+                                obj.x = nail.x
+                                obj.y = nail.y
+                                if (nail.x > this.sys.canvas.width / 2) {
+                                    obj.body.angularVelocity = -90;
+                                    obj.setOrigin(1, 0);
+                                } else {
+                                    obj.body.angularVelocity = 90;
+                                    obj.setOrigin(0, 0);
+                                }
+
+                                setTimeout(() => {
+                                    obj.body.angularVelocity = 0
+                                }, 500)
+                            }
                         });
-
-
-
-                        // //拔掉左上角钉子时，对象向右旋转，以右上角钉子为中心旋转
-                        // if (hitNail.x < this.sys.canvas.width / 2) {
-                        //     this.objects.getChildren().forEach((obj) => {
-                        //         obj.body.angularVelocity = 100; // 设置对象的旋转速度
-                        //         obj.body.rotationPoint.x = rightNail.x; // 设置对象的旋转中心点
-                        //         obj.body.rotationPoint.y = rightNail.y; // 设置对象的旋转中心点
-                        //     });
-                        // }
-                        // //拔掉右上角钉子时对象向左旋转，以左上角钉子为中心旋转
-                        // else {
-                        //     this.objects.getChildren().forEach((obj) => {
-                        //         obj.body.angularVelocity = -100; // 设置对象的旋转速度
-                        //         obj.body.rotationPoint.x = hitNail.x; // 设置对象的旋转中心点
-                        //         obj.body.rotationPoint.y = hitNail.y; // 设置对象的旋转中心点
-                        //     });
-                        // }
 
                         this.objects.children.iterate(object => {
                             object.body.allowGravity = true; // 移除钉子时，物体开始受到重力影响
