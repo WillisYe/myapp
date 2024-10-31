@@ -1,6 +1,8 @@
 // deno run -A getPhone.js
-import cheerio from 'npm:cheerio'
+// import cheerio from 'npm:cheerio'
+import * as cheerio from 'https://cdn.skypack.dev/cheerio';
 import { ensureFile } from "https://deno.land/std/fs/mod.ts";
+import { green, bold } from "https://deno.land/std/fmt/colors.ts";
 
 const req1 = await getHtmlContent('https://www.antutu.com/ranking/rank2.htm');
 const $ = cheerio.load(req1);
@@ -8,24 +10,39 @@ const $ = cheerio.load(req1);
 var list = []
 $('.newrankc').each(function (i, elem) {
   var str = $(this).text().trim()
-  var arr = str.split(' ').filter(item => item)
+  var arr = str.replaceAll('\n', '').split(' ').filter(item => item)
+  var nameAll = arr.slice(1, -1).join(' ')
+  var name = nameAll.split(' (')[0]
+  var other = nameAll.split(' (')[1]
+  var RAMROM = other.match(/\d+\+\d+/)[0]
+  var RAM = RAMROM.split('+')[0].trim()
+  var ROM = RAMROM.split('+')[1].trim()
+  var names = `${name.replace('Redmi', '红米').replace('realme ', '真我')}(${RAM}+${ROM}GB)`
+  var url = `https://s.cnmo.com/se.php?s=${encodeURIComponent(names)}`
+
   list[i] = {
-    str: str,
+    // str: str,
     index: arr[0],
     sku: arr.at(-1),
-    name: arr.slice(1, -1).join(' '),
+    name,
+    names,
+    nameAll,
+    RAMROM,
+    RAM,
+    ROM,
+    url,
     params: {}
   }
 });
 
 for (const item of list.slice(0, -1)) {
-  var url = `https://s.cnmo.com/se.php?s=${encodeURIComponent(item.name)}`
-  const content = await getHtmlContent(url);
+  const content = await getHtmlContent(item.url);
   var $1 = cheerio.load(content);
   var a = $1('.parameter a').attr('href')
   if (a) {
     item.a = 'https:' + a
     const html = await getHtmlContent(a, 'GBK');
+    // writeFile(`./.output/${item.names}.html`, html)
     var $2 = cheerio.load(html);
     item.price = $2('.cell-price .red').text()
     $2('#cell-con-table li').each(function (i, elem) {
@@ -36,7 +53,7 @@ for (const item of list.slice(0, -1)) {
   }
 }
 
-list = list.toSorted((prev, cur) => parseFloat(prev.params?.['屏幕尺寸'] || 0) - parseFloat(cur.params?.['屏幕尺寸'] || 0))
+// list = list.toSorted((prev, cur) => parseFloat(prev.params?.['屏幕尺寸'] || 0) - parseFloat(cur.params?.['屏幕尺寸'] || 0))
 writeFile('./.output/antutu.json', JSON.stringify(list, null, 2))
 
 async function writeFile(filePath, content) {
@@ -44,6 +61,7 @@ async function writeFile(filePath, content) {
   await ensureFile(filePath);
   // 写入文件
   await Deno.writeTextFileSync(filePath, content);
+  console.log(green("统计数据已生成，路径 " + filePath));
 }
 
 async function getHtmlContent(url, code = 'utf-8') {

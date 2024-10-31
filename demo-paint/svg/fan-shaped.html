@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>扇形旋转切换效果（等级切换转盘）</title>
+  <!-- 引入外部库 -->
+  <script>
+    window.__unocss = { rules: [] };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@unocss/runtime"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/radash/12.1.0/radash.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs/dist/cdn.min.js"></script>
+
+  <style>
+    /* 样式设置 */
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .wrap {
+      width: 800px;
+      height: 800px;
+      background-color: #000;
+      overflow: hidden;
+    }
+
+    svg {
+      background-color: #000;
+      color: #aaa;
+    }
+  </style>
+</head>
+
+<body>
+  <div x-data="dropdown">
+    <div class="wrap">
+      <!-- SVG图形 -->
+      <svg width="800" height="800" viewBox="-400 -400 800 800" :transform="transform">
+        <circle cx="0" cy="0" r="300" stroke="#aaa" fill="#000" stroke-width="5px" />
+        <template x-for="option in ctrOptions">
+          <g :transform="option.transform">
+            <foreignObject x="-50" y="300" width="100" height="52">
+              <div xmlns="http://www.w3.org/1999/xhtml" style="font-size:20px; text-align: center;">
+                <div>
+                  <span x-text="option.range[0]"></span>
+                  <span>-</span>
+                  <span x-text="option.range[1]"></span>
+                </div>
+                <div x-text="option.label"></div>
+              </div>
+            </foreignObject>
+          </g>
+        </template>
+      </svg>
+    </div>
+
+    <div class="flex items-center gap-10px">
+      <div @click="next(-1)">上一页</div>
+      <div @click="next(1)">下一页</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var templates = document.querySelectorAll('svg template');
+      var el, template, attribs, attrib, count, child, content;
+      for (var i = 0; i < templates.length; i++) {
+        el = templates[i];
+        template = el.ownerDocument.createElement('template');
+        el.parentNode.insertBefore(template, el);
+        attribs = el.attributes;
+        count = attribs.length;
+        while (count-- > 0) {
+          attrib = attribs[count];
+          template.setAttribute(attrib.name, attrib.value);
+          el.removeAttribute(attrib.name);
+        }
+        el.parentNode.removeChild(el);
+        content = template.content;
+        while ((child = el.firstChild)) {
+          content.appendChild(child);
+        }
+      }
+    })();
+  </script>
+
+  <script>
+    // 初始化数据
+    const stepCount = 5;
+    const angle = 20;
+    const ranges = [[10, 15], [15, 20], [20, 30], [30, 50], [50, Infinity]]; // 添加Infinity表示无上限
+    const ctrOptions = Array.from({ length: stepCount }, (_, index) => ({
+      value: index + 1,
+      label: `旅行家V${index + 1}`,
+      range: ranges[index],
+      transform: `rotate(${-angle * (index - 1)} 0 0)`
+    }));
+
+    // Alpine.js初始化
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('dropdown', () => ({
+        ctrOptions, // 使用前面定义的ctrOptions变量
+        transform: `rotate(0 0 0)`,
+        step: 0,
+        next(step) {
+          console.log(step)
+          this.step += step
+          this.transform = `rotate(${-angle * this.step} 0 0)`
+        },
+      }));
+    });
+  </script>
+</body>
+
+</html>
