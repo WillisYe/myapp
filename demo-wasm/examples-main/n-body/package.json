@@ -1,0 +1,19 @@
+{
+  "name": "@assemblyscript/n-body-example",
+  "version": "1.0.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "scripts": {
+    "asbuild:wasm": "asc assembly/index.ts --target wasm",
+    "asbuild": "npm run asbuild:wasm",
+    "tsbuild": "tsc -p assembly -t esnext -m commonjs --outDir build && node scripts/postprocess",
+    "rsbuild": "cd rust && RUSTFLAGS='-C link-arg=-s' cargo +nightly build --release",
+    "build": "npm run asbuild && npm run tsbuild && npm run rsbuild",
+    "start": "npx serve",
+    "test": "node --nowasm-bounds-checks --nowasm-stack-checks --noliftoff --expose-gc tests"
+  },
+  "devDependencies": {
+    "assemblyscript": "latest",
+    "typescript": "^4.7.4"
+  }
+}

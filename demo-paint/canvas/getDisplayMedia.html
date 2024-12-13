@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Get Display Media Demo</title>
+  <style>
+    video {
+      width: 100%;
+      max-width: 600px;
+      border: 1px solid #ccc;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Get Display Media Demo</h1>
+  <button id="startButton">Start Screen Sharing</button>
+  <button id="stopButton" disabled>Stop Screen Sharing</button>
+  <video id="screenVideo" autoplay></video>
+
+  <script>
+    const startButton = document.getElementById('startButton');
+    const stopButton = document.getElementById('stopButton');
+    const screenVideo = document.getElementById('screenVideo');
+
+    let mediaStream = null;
+
+    startButton.addEventListener('click', async () => {
+      try {
+        mediaStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+        screenVideo.srcObject = mediaStream;
+
+        startButton.disabled = true;
+        stopButton.disabled = false;
+      } catch (err) {
+        console.error('Error accessing display media:', err);
+      }
+    });
+
+    stopButton.addEventListener('click', () => {
+      if (mediaStream) {
+        mediaStream.getTracks().forEach(track => track.stop());
+        screenVideo.srcObject = null;
+      }
+
+      startButton.disabled = false;
+      stopButton.disabled = true;
+    });
+  </script>
+</body>
+</html>

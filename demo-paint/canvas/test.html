@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    #canvas {
+      border: 1px solid #000;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="canvas" width="600" height="600"></canvas>
+  <script>
+    // 定义画布和上下文
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    // 定义点的坐标 {x, y}
+    let start = { x: 100, y: 100 };
+    var [h1, h2] = [canvas.height / 3 * 1, canvas.height / 3 * 2]
+    var [w1, w2] = [canvas.width / 3 * 1, canvas.width / 3 * 2];
+
+    let list = [
+      {
+        cp1: { x: 230, y: 30 },
+        cp2: { x: 150, y: 80 },
+        end: { x: 250, y: 100 },
+      },
+      {
+        cp1: { x: 330, y: 130 },
+        cp2: { x: 250, y: 180 },
+        end: { x: 350, y: 200 },
+      },
+      {
+        cp1: { x: 430, y: 230 },
+        cp2: { x: 350, y: 280 },
+        end: { x: 450, y: 300 },
+      },
+    ]
+    list = getList();
+
+    // 三次贝塞尔曲线
+    ctx.fillStyle = "blue";
+    ctx.beginPath();
+    ctx.arc(start.x, start.y, 5, 0, 2 * Math.PI); // 起点
+    ctx.fill();
+
+    for (let index = 0; index < list.length; index++) {
+      const { cp1, cp2, end } = list[index];
+
+      var pre = list[index - 1] || { end: start }
+
+      ctx.beginPath();
+      ctx.moveTo(pre.end.x, pre.end.y);
+      // quadraticCurveTo bezierCurveTo
+      ctx.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, end.x, end.y);
+      ctx.stroke();
+
+      // 终点
+      ctx.fillStyle = "blue";
+      ctx.beginPath();
+      ctx.arc(end.x, end.y, 5, 0, 2 * Math.PI); // 终点
+      ctx.fill();
+
+      // 控制点
+      ctx.fillStyle = "red";
+      ctx.beginPath();
+      ctx.arc(cp1.x, cp1.y, 5, 0, 2 * Math.PI); // 控制点一
+      ctx.arc(cp2.x, cp2.y, 5, 0, 2 * Math.PI); // 控制点二
+      ctx.fill();
+    }
+
+    function getList(total) {
+      var list = []
+      for (let index = 0; true; index++) {
+        if (index == 0) {
+          list.push(getItem(start));
+        } else {
+          var end = list[index - 1].end
+          if (index > 5 && getLength(start, end) < 150) {
+            list.push(getItem(end, true));
+            return list
+          } else {
+            list.push(getItem(end));
+          }
+        }
+      }
+      return list;
+    }
+    function getItem({ x, y }, toClose = false) {
+      // toClose = true 结束点为起点
+
+      var s = 100
+      var e = 150
+      var mini = 20
+
+      var xe = getRandom(s, e);
+      var ye = getRandom(s, e);
+      switch (true) {
+        case x < w1:
+          switch (true) {
+            case y < h1:
+              // 左上
+              var xe = getRandom(s, e);
+              var ye = getRandom(mini * -1, mini);
+              break;
+            case y > h2:
+              // 左下
+              var xe = getRandom(mini * -1, mini);
+              var ye = getRandom(s * -1, e * -1);
+              break;
+            default:
+              // 左
+              var xe = getRandom(mini * -1, mini);
+              var ye = getRandom(s * -1, e * -1);
+              break;
+          }
+
+          break;
+        case x > w2:
+          switch (true) {
+            case y < h1:
+              // 右上
+              var xe = getRandom(mini * -1, mini);
+              var ye = getRandom(s, e);
+              break;
+            case y > h2:
+              // 右下
+              var xe = getRandom(s * -1, e * -1);
+              var ye = getRandom(mini * -1, mini);
+              break;
+            default:
+              // 右
+              var xe = getRandom(mini * -1, mini);
+              var ye = getRandom(s, e);
+              break;
+          }
+          break;
+        default:
+          switch (true) {
+            case y < h1:
+              // 上
+              var xe = getRandom(s, e);
+              var ye = getRandom(mini * -1, mini);
+              break;
+            case y > h2:
+              // 下
+              var xe = getRandom(s * -1, e * -1);
+              var ye = getRandom(mini * -1, mini);
+              break;
+            default:
+              // 中
+              break;
+          }
+          break;
+      }
+
+      if (toClose) {
+        // toClose = true 结束点为起点
+        var xe = start.x - x;
+        var ye = start.y - y;
+      }
+
+      var x1 = (2 * x + xe) / 2;
+      var y1 = (2 * y + ye) / 2;
+      var item = {
+        cp1: { x: getRandom(x1 - mini * 1.5, x1 - mini * 1.5), y: getRandom(y1 - mini * 1.5, y1 - mini * 1.5) },
+        cp2: { x: getRandom(x1 + mini * 1.5, x1 + mini * 1.5), y: getRandom(y1 - mini * 1.5, y1 + mini * 1.5) },
+        end: { x: x + xe, y: y + ye },
+      }
+
+      return item;
+    }
+
+    function getRandom(s, e) {
+      return Math.floor(Math.random() * (e - s + 1)) + s;
+    }
+
+    function getLength(s, e) {
+      // 两点之间的距离
+      return Math.sqrt(Math.pow(s.x - e.x, 2) + Math.pow(s.y - e.y, 2));
+    }
+  </script>
+</body>
+
+</html>
