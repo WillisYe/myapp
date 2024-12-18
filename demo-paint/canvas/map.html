@@ -66,11 +66,11 @@
       ctx.fillStyle = `rgb(${pixel[0]},${pixel[1]},${pixel[2]})`;
       ctx.fillRect(0, canvas_left.height - 40, 135, 40);
 
-      ctx.fillStyle = `#fff`;
+      ctx.fillStyle = `#ffffff`;
       ctx.fillRect(10, canvas_left.height - 30, 115, 20);
 
       ctx.font = "20px serif";
-      ctx.fillStyle = `#000`;
+      ctx.fillStyle = `#000000`;
       ctx.fillText(`海拔${altitude}m`, 20, canvas_left.height - 13);
     }
 
@@ -103,26 +103,17 @@
       let end = length - 4;
 
       while (start <= end) {
-        const startIndex = pixel[1] < 128 ? start : end;
-        const endIndex = pixel[1] < 128 ? end : start;
+        const startIndex = start;
+        const endIndex = end;
 
-        const startPixel = imageData.data.slice(startIndex, startIndex + 3);
-        const endPixel = imageData.data.slice(endIndex, endIndex + 3);
-
-        if (colorSimilarity(pixel, startPixel) < offset) {
-          if (colorSimilarity(pixel, [255, 255, 255]) > 10) {
-            const x = Math.floor(startIndex % 4 / 135);
-            const y = Math.floor(startIndex / 4 / 135);
-            return { x, y };
-          }
+        if (isColorMatch(imageData.data, startIndex, pixel, offset) && isNotWhite(imageData.data, startIndex)) {
+          const { x, y } = getXY(startIndex);
+          return { x, y };
         }
 
-        if (colorSimilarity(pixel, endPixel) < offset) {
-          if (colorSimilarity(pixel, [255, 255, 255]) > 10) {
-            const x = Math.floor(endIndex % 4 / 135);
-            const y = Math.floor(endIndex / 4 / 135);
-            return { x, y };
-          }
+        if (isColorMatch(imageData.data, endIndex, pixel, offset) && isNotWhite(imageData.data, endIndex)) {
+          const { x, y } = getXY(endIndex);
+          return { x, y };
         }
 
         start += 4;
@@ -133,7 +124,6 @@
     }
 
     function setSameColor(color, offset = OFFSET) {
-      // 将相同海拔地区的颜色标记为红色
       drawRightCanvas();
       const imageData = ctx_right.getImageData(0, 0, canvas_right.width, canvas_right.height);
       let count = 0;
@@ -145,25 +135,14 @@
         const startIndex = start;
         const endIndex = end;
 
-        const startPixel = imageData.data.slice(startIndex, startIndex + 3);
-        const endPixel = imageData.data.slice(endIndex, endIndex + 3);
-
-        if (colorSimilarity(startPixel, color) < offset) {
-          if (colorSimilarity(startPixel, [255, 255, 255]) > 10) {
-            imageData.data[startIndex] = 255;
-            imageData.data[startIndex + 1] = 0;
-            imageData.data[startIndex + 2] = 0;
-            count++;
-          }
+        if (isColorMatch(imageData.data, startIndex, color, offset) && isNotWhite(imageData.data, startIndex)) {
+          setPixelRed(imageData.data, startIndex);
+          count++;
         }
 
-        if (colorSimilarity(endPixel, color) < offset) {
-          if (colorSimilarity(endPixel, [255, 255, 255]) > 10) {
-            imageData.data[endIndex] = 255;
-            imageData.data[endIndex + 1] = 0;
-            imageData.data[endIndex + 2] = 0;
-            count++;
-          }
+        if (isColorMatch(imageData.data, endIndex, color, offset) && isNotWhite(imageData.data, endIndex)) {
+          setPixelRed(imageData.data, endIndex);
+          count++;
         }
 
         start += 4;
@@ -173,6 +152,28 @@
       if (count < RANGEMIN && offset / OFFSET < 5) {
         setSameColor(color, offset + OFFSET);
       }
+    }
+
+    function isColorMatch(data, index, color, offset) {
+      const pixel = data.slice(index, index + 3);
+      return colorSimilarity(pixel, color) < offset;
+    }
+
+    function isNotWhite(data, index) {
+      const pixel = data.slice(index, index + 3);
+      return colorSimilarity(pixel, [255, 255, 255]) > 10;
+    }
+
+    function setPixelRed(data, index) {
+      data[index] = 255;
+      data[index + 1] = 0;
+      data[index + 2] = 0;
+    }
+
+    function getXY(index) {
+      const x = Math.floor(index % (135 * 4) / 4);
+      const y = Math.floor(index / (135 * 4));
+      return { x, y };
     }
 
     function colorSimilarity(color1, color2) {
