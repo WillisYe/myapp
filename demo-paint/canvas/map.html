@@ -35,7 +35,7 @@
 
     const image = document.getElementById("source");
 
-    const OFFSET = 10;
+    const OFFSET = 9;
     const RANGEMIN = 5000;
 
     image.addEventListener("load", (e) => {
@@ -125,7 +125,7 @@
     function getXYSameColor(pixel, offset = OFFSET) {
       var imageData = ctx_left.getImageData(0, 0, 135, canvas_left.height - 40);
       for (var index = 0; index < imageData.data.length; index += 4) {
-        var i = pixel[1] > 128 ? index : imageData.data.length - index;
+        var i = pixel[1] < 128 ? index : imageData.data.length - index;
 
         if (colorSimilarity(pixel, imageData.data.slice(i, i + 3)) < offset) {
           if (colorSimilarity(pixel, [255, 255, 255]) > 10) {
