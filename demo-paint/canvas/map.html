@@ -49,6 +49,10 @@
     function handleClick(e, ctx_cur) {
       const pixel = ctx_cur.getImageData(e.offsetX, e.offsetY, 1, 1).data;
       if (pixel[0] === 255 && pixel[1] === 0 && pixel[2] === 0) return;
+      if (pixel[0] === 255 && pixel[1] === 255 && pixel[2] === 255) {
+        drawRightCanvas();
+        return
+      };
 
       const altitude = e.target.id === "canvas-left"
         ? getAltitudeByY(e)
@@ -128,24 +132,46 @@
       return getXYSameColor(pixel, offset + OFFSET);
     }
 
-    function setSameColor(pixel, offset = OFFSET) {
+    function setSameColor(color, offset = OFFSET) {
+      // 将相同海拔地区的颜色标记为红色
       drawRightCanvas();
       const imageData = ctx_right.getImageData(0, 0, canvas_right.width, canvas_right.height);
       let count = 0;
-      for (let index = 0; index < imageData.data.length; index += 4) {
-        const i = pixel[1] > 128 ? index : imageData.data.length - index;
-        if (colorSimilarity(pixel, imageData.data.slice(i, i + 3)) < offset) {
-          if (colorSimilarity(pixel, [255, 255, 255]) > 10) {
-            imageData.data[i] = 255;
-            imageData.data[i + 1] = 0;
-            imageData.data[i + 2] = 0;
+      const length = imageData.data.length;
+      let start = 0;
+      let end = length - 4;
+
+      while (start <= end) {
+        const startIndex = start;
+        const endIndex = end;
+
+        const startPixel = imageData.data.slice(startIndex, startIndex + 3);
+        const endPixel = imageData.data.slice(endIndex, endIndex + 3);
+
+        if (colorSimilarity(startPixel, color) < offset) {
+          if (colorSimilarity(startPixel, [255, 255, 255]) > 10) {
+            imageData.data[startIndex] = 255;
+            imageData.data[startIndex + 1] = 0;
+            imageData.data[startIndex + 2] = 0;
             count++;
           }
         }
+
+        if (colorSimilarity(endPixel, color) < offset) {
+          if (colorSimilarity(endPixel, [255, 255, 255]) > 10) {
+            imageData.data[endIndex] = 255;
+            imageData.data[endIndex + 1] = 0;
+            imageData.data[endIndex + 2] = 0;
+            count++;
+          }
+        }
+
+        start += 4;
+        end -= 4;
       }
       ctx_right.putImageData(imageData, 0, 0);
       if (count < RANGEMIN && offset / OFFSET < 5) {
-        setSameColor(pixel, offset + OFFSET);
+        setSameColor(color, offset + OFFSET);
       }
     }
 
