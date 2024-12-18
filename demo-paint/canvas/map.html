@@ -38,58 +38,41 @@
     const OFFSET = 9;
     const RANGEMIN = 5000;
 
-    image.addEventListener("load", (e) => {
+    image.addEventListener("load", () => {
       ctx_left.drawImage(image, 10, 10, 115, 780, 0, 0, 135, canvas_left.height - 40);
-      drawRightCanvas()
+      drawRightCanvas();
     });
 
-    canvas_left.addEventListener("click", (e) => {
-      handleClick(e, ctx_left);
-    });
-
-    canvas_right.addEventListener("click", (e) => {
-      handleClick(e, ctx_right);
-    });
+    canvas_left.addEventListener("click", (e) => handleClick(e, ctx_left));
+    canvas_right.addEventListener("click", (e) => handleClick(e, ctx_right));
 
     function handleClick(e, ctx_cur) {
-      var altitude;
+      const pixel = ctx_cur.getImageData(e.offsetX, e.offsetY, 1, 1).data;
+      if (pixel[0] === 255 && pixel[1] === 0 && pixel[2] === 0) return;
 
-      // 获取点击处的颜色
-      var pixel = ctx_cur.getImageData(e.offsetX, e.offsetY, 1, 1).data;
-      if (pixel[0] == 255 && pixel[1] == 0 && pixel[2] == 0) {
-        return
-      }
+      const altitude = e.target.id === "canvas-left"
+        ? getAltitudeByY(e)
+        : getAltitudeByPixel(pixel);
 
-      switch (e.target.id) {
-        case "canvas-left":
-          altitude = getAltitudeByY(e)
-          break;
-        case "canvas-right":
-          altitude = getAltitudeByPixel(pixel)
-          break;
-        default:
-          break;
-      }
-
-      ctx_left.fillStyle = `rgb(${pixel[0]},${pixel[1]},${pixel[2]})`;
-      ctx_left.fillRect(0, canvas_left.height - 40, 135, 40);
-
-      ctx_left.fillStyle = `#fff`;
-      ctx_left.fillRect(10, canvas_left.height - 30, 115, 20);
-
-      ctx_left.font = "20px serif";
-      ctx_left.fillStyle = `#000`;
-      ctx_left.fillText(`海拔${altitude}m`, 20, canvas_left.height - 13);
-
+      displayAltitude(ctx_left, pixel, altitude);
       setSameColor(pixel);
     }
 
-    // 点击图片时，获取点击位置相对于图片左上角的坐标
+    function displayAltitude(ctx, pixel, altitude) {
+      ctx.fillStyle = `rgb(${pixel[0]},${pixel[1]},${pixel[2]})`;
+      ctx.fillRect(0, canvas_left.height - 40, 135, 40);
+
+      ctx.fillStyle = `#fff`;
+      ctx.fillRect(10, canvas_left.height - 30, 115, 20);
+
+      ctx.font = "20px serif";
+      ctx.fillStyle = `#000`;
+      ctx.fillText(`海拔${altitude}m`, 20, canvas_left.height - 13);
+    }
+
     function getImagePosition(e) {
-      var rect = e.target.getBoundingClientRect();
-      var x = e.clientX - rect.left;
-      var y = e.clientY - rect.top;
-      return { x, y };
+      const rect = e.target.getBoundingClientRect();
+      return { x: e.clientX - rect.left, y: e.clientY - rect.top };
     }
 
     function drawRightCanvas() {
@@ -99,97 +82,60 @@
       ctx_right.fillRect(0, 725, 90, 805);
     }
 
-    /* 
-      根据点击位置的y坐标获取海拔高度
-      y坐标区间：[10, 855]
-      海拔值区间：[7543m, -790m]
-    */
-    function getAltitudeByY(e, _y) {
-      var y = _y || getImagePosition(e).y
-      var altitude = 0;
-      altitude = (y - 10) * (-790 - 7543) / (855 - 10) + 7543;
-      // 四舍五入取整
-      altitude = Math.round(altitude);
+    function getAltitudeByY(e, y = getImagePosition(e).y) {
+      const altitude = Math.round((y - 10) * (-790 - 7543) / (855 - 10) + 7543);
       return altitude;
     }
 
     function getAltitudeByPixel(pixel) {
-      var y = getXYSameColor(pixel)?.y
-      if (y) {
-        return getAltitudeByY(null, y);
-      } else {
-        return 0;
-      }
+      const y = getXYSameColor(pixel)?.y;
+      return y ? getAltitudeByY(null, y) : 0;
     }
 
     function getXYSameColor(pixel, offset = OFFSET) {
-      var imageData = ctx_left.getImageData(0, 0, 135, canvas_left.height - 40);
-      for (var index = 0; index < imageData.data.length; index += 4) {
-        var i = pixel[1] < 128 ? index : imageData.data.length - index;
-
+      const imageData = ctx_left.getImageData(0, 0, 135, canvas_left.height - 40);
+      for (let index = 0; index < imageData.data.length; index += 4) {
+        const i = pixel[1] < 128 ? index : imageData.data.length - index;
         if (colorSimilarity(pixel, imageData.data.slice(i, i + 3)) < offset) {
           if (colorSimilarity(pixel, [255, 255, 255]) > 10) {
-            // 根据i计算像素位置
-            var x = Math.floor(i % 4 / 135);
-            var y = Math.floor(i / 4 / 135);
+            const x = Math.floor(i % 4 / 135);
+            const y = Math.floor(i / 4 / 135);
             return { x, y };
           }
         }
       }
-      return getXYSameColor(pixel, offset + OFFSET)
+      return getXYSameColor(pixel, offset + OFFSET);
     }
 
-    // canvas_right中相近颜色标红
     function setSameColor(pixel, offset = OFFSET) {
       drawRightCanvas();
-      var imageData = ctx_right.getImageData(0, 0, 1355, 805);
-
-      var count = 0
-      for (var index = 0; index < imageData.data.length; index += 4) {
-        var i = pixel[1] > 128 ? index : imageData.data.length - index;
-
+      const imageData = ctx_right.getImageData(0, 0, canvas_right.width, canvas_right.height);
+      let count = 0;
+      for (let index = 0; index < imageData.data.length; index += 4) {
+        const i = pixel[1] > 128 ? index : imageData.data.length - index;
         if (colorSimilarity(pixel, imageData.data.slice(i, i + 3)) < offset) {
           if (colorSimilarity(pixel, [255, 255, 255]) > 10) {
             imageData.data[i] = 255;
             imageData.data[i + 1] = 0;
             imageData.data[i + 2] = 0;
-            count++
+            count++;
           }
         }
       }
       ctx_right.putImageData(imageData, 0, 0);
-      var rate = offset / OFFSET
-      if (count < RANGEMIN && rate < 5) {
-        setSameColor(pixel, offset + OFFSET)
+      if (count < RANGEMIN && offset / OFFSET < 5) {
+        setSameColor(pixel, offset + OFFSET);
       }
     }
 
-    /**
-     * 计算两个颜色的相似度
-     * @param {string} color1 - 第一个颜色，格式为 [r, g, b]
-     * @param {string} color2 - 第二个颜色，格式为 [r, g, b]
-     * @returns {number} - 返回两个颜色的相似度，值越小表示越相似
-     */
     function colorSimilarity(color1, color2) {
-
-      function parseColor(color) {
-        let r, g, b;
-        r = color[0];
-        g = color[1];
-        b = color[2];
-        return { r, g, b };
-      }
-
-      const rgb1 = parseColor(color1);
-      const rgb2 = parseColor(color2);
-
-      // 计算欧几里得距离
+      const r1 = color1[0], g1 = color1[1], b1 = color1[2];
+      const r2 = color2[0], g2 = color2[1], b2 = color2[2];
       const distance = Math.sqrt(
-        Math.pow(rgb1.r - rgb2.r, 2) +
-        Math.pow(rgb1.g - rgb2.g, 2) +
-        Math.pow(rgb1.b - rgb2.b, 2)
+        Math.pow(r1 - r2, 2) +
+        Math.pow(g1 - g2, 2) +
+        Math.pow(b1 - b2, 2)
       );
-
       return distance;
     }
   </script>
