@@ -35,7 +35,7 @@
 
     const image = document.getElementById("source");
 
-    const OFFSET = 9;
+    const OFFSET = 3;
     const RANGEMIN = 5000;
 
     image.addEventListener("load", () => {
@@ -94,16 +94,37 @@
 
     function getXYSameColor(pixel, offset = OFFSET) {
       const imageData = ctx_left.getImageData(0, 0, 135, canvas_left.height - 40);
-      for (let index = 0; index < imageData.data.length; index += 4) {
-        const i = pixel[1] < 128 ? index : imageData.data.length - index;
-        if (colorSimilarity(pixel, imageData.data.slice(i, i + 3)) < offset) {
+      const length = imageData.data.length;
+      let start = 0;
+      let end = length - 4;
+
+      while (start <= end) {
+        const startIndex = pixel[1] < 128 ? start : end;
+        const endIndex = pixel[1] < 128 ? end : start;
+
+        const startPixel = imageData.data.slice(startIndex, startIndex + 3);
+        const endPixel = imageData.data.slice(endIndex, endIndex + 3);
+
+        if (colorSimilarity(pixel, startPixel) < offset) {
           if (colorSimilarity(pixel, [255, 255, 255]) > 10) {
-            const x = Math.floor(i % 4 / 135);
-            const y = Math.floor(i / 4 / 135);
+            const x = Math.floor(startIndex % 4 / 135);
+            const y = Math.floor(startIndex / 4 / 135);
             return { x, y };
           }
         }
+
+        if (colorSimilarity(pixel, endPixel) < offset) {
+          if (colorSimilarity(pixel, [255, 255, 255]) > 10) {
+            const x = Math.floor(endIndex % 4 / 135);
+            const y = Math.floor(endIndex / 4 / 135);
+            return { x, y };
+          }
+        }
+
+        start += 4;
+        end -= 4;
       }
+
       return getXYSameColor(pixel, offset + OFFSET);
     }
 
