@@ -1,0 +1,24 @@
+{
+  "name": "vite-vue-typescript-starter",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "alloyfinger": "^0.1.16",
+    "matter-js": "^0.19.0",
+    "vue": "^3.5.10",
+    "vue-lim": "*"
+  },
+  "devDependencies": {
+    "@types/matter-js": "^0.19.6",
+    "@vitejs/plugin-vue": "^5.1.4",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.8",
+    "vue-tsc": "^2.1.6"
+  }
+}

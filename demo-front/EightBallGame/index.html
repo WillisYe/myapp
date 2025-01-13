@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <title>台球8球游戏</title>
+
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta content="telephone=no" name="format-detection">  
+  <meta name="apple-mobile-web-app-title" content="台球8球游戏">
+  
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="x5-fullscreen" content="true">
+</head>
+
+<body>
+  <noscript>
+    <strong>Please enable JavaScript to continue.</strong>
+  </noscript>
+  <div id="app"></div>
+
+  <script>
+    ; (function () {
+      // 本机调试时开启eruda，方便排查问题
+      if (!/192.168.20/.test(window.location)) return;
+      if (!isMobile()) return;
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/vconsole';
+      document.body.appendChild(script);
+      script.onload = function () { new window.VConsole(); }
+
+      function isMobile() {
+        if (navigator.connection) {
+          var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+          // "none"：没有网络连接。 "wifi"：通过 Wi-Fi 连接。 "cellular"：通过移动数据连接（如 3G、4G、5G）。 "ethernet"：通过以太网连接。 "bluetooth"：通过蓝牙连接。 "other"：其他类型的连接。
+          return ['wifi', 'cellular'].includes(connection.type);
+        }
+        return false;
+      }
+    })();
+  </script>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
+</html>
