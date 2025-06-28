@@ -40,14 +40,14 @@ songName = []  # 列表存放歌曲名字
 songID1 = []  # 列表存放歌曲编号
 # 构造url
 for i in range(0, 1):
-    cur = list[8]
+    cur = list[9]
     url = "http://www.9ku.com" + cur['href']
     print('榜单名称', cur['tit'])
     req = request.Request(url, headers=header)
     data_html = request.urlopen(req).read().decode()
 
     html = etree.HTML(data_html)
-    
+
     pat1 = '//a[@class="songName "]/@href'
     pat2 = '//a[@class="songName "]/text()'
 
@@ -56,7 +56,7 @@ for i in range(0, 1):
     # 从网页中获取所有歌曲名字
     songID1.extend(idlist)  # 把多个列表合成一个列表
     songName.extend(titlelist)
-    
+
     pat4 = '/play/(.*?).htm'
     for j in range(0, len(songID1)):
         idlist2 = re.findall(pat4, songID1[j])  # 从网页中获取所有歌曲ID
@@ -79,7 +79,11 @@ for i in range(0, len(songID)):
         num = int(songID[i][0:2])+1
         songurl = "http://www.9ku.com/html/playjs/" + \
             str(num)+"/"+str(songID[i])+".js"
-        data2 = requests.get(songurl).text  # 二进
+        try:
+            data2 = requests.get(songurl, headers=header, timeout=10).text  # 增加超时和伪装头
+        except requests.exceptions.RequestException as e:
+            print(Fore.RED + f"请求 {songurl} 失败，原因：{e}")
+            continue
 
         pat3 = '"wma":"(.*?)","m4a"'
         url2 = re.findall(pat3, data2)  # 从网页中获取所有歌曲ID
@@ -90,7 +94,7 @@ for i in range(0, len(songID)):
         data = requests.get('https://music.jsbaidu.com' + result_url).content
 
         try:
-            with open("d:\\music\\{}.mp3".format(songname), "wb") as f:                
+            with open("d:\\music\\{}.mp3".format(songname), "wb") as f:
                 f.write(data)
                 count = count + 1
                 print(Fore.GREEN + "第", count, "首", songname, '下载成功')
