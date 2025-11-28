@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>八球台球游戏</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1>八球台球游戏</h1>
+        <canvas id="gameCanvas" width="800" height="400"></canvas>
+        <div class="game-info">
+            <div class="player-turn">
+                当前玩家: <span id="currentPlayer">Player 1</span>
+            </div>
+            <div class="ball-type">
+                球类型: <span id="ballType">未选择</span>
+            </div>
+            <button id="resetBtn">重新开始</button>
+        </div>
+    </div>
+    <script src="js/game.js"></script>
+</body>
+</html>

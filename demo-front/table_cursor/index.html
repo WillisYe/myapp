@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>黑八桌球游戏</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+        }
+
+        .game-container {
+            background: #2c3e50;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        canvas {
+            border: 3px solid #34495e;
+            border-radius: 10px;
+            background: #27ae60;
+            cursor: crosshair;
+        }
+
+        .controls {
+            margin-top: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .info {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            color: white;
+        }
+
+        .power-meter {
+            width: 200px;
+            height: 20px;
+            background: #34495e;
+            border-radius: 10px;
+            margin: 10px auto;
+            overflow: hidden;
+        }
+
+        .power-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e74c3c, #f39c12, #f1c40f);
+            width: 0%;
+            transition: width 0.1s;
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        button:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎱 黑八桌球游戏</h1>
+
+    <div class="game-container">
+        <canvas id="gameCanvas" width="800" height="400"></canvas>
+
+        <div class="controls">
+            <div class="power-meter">
+                <div class="power-fill" id="powerFill"></div>
+            </div>
+            <p>按住鼠标左键蓄力，释放击球</p>
+            <p>目标：将8号球（黑球）击入袋中</p>
+            <button id="resetBtn">重新开始</button>
+            <button id="rulesBtn">游戏规则</button>
+        </div>
+
+        <div class="info">
+            <p><strong>当前回合：</strong><span id="currentTurn">玩家1</span></p>
+            <p><strong>剩余球数：</strong><span id="remainingBalls">15</span></p>
+            <p><strong>8号球状态：</strong><span id="eightBallStatus">未入袋</span></p>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>

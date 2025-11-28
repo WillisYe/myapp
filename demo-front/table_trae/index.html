@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>黑八桌球 - 移动端台球游戏</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1a1a1a',
+                        secondary: '#333333',
+                        accent: '#0066cc',
+                        tableGreen: '#006400',
+                        ballWhite: '#f5f5f5',
+                        ballBlack: '#0a0a0a',
+                        ballYellow: '#ffd700',
+                        ballBlue: '#1e90ff',
+                        ballRed: '#dc143c',
+                        ballPurple: '#9370db',
+                        ballOrange: '#ffa500',
+                        ballGreen: '#228b22',
+                        ballBrown: '#a52a2a'
+                    },
+                    fontFamily: {
+                        game: ['Arial', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .bg-pool-pattern {
+                background-image: radial-gradient(circle, rgba(0,100,0,0.1) 1px, transparent 1px);
+                background-size: 20px 20px;
+            }
+            .cue-shadow {
+                filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5));
+            }
+            .ball-shadow {
+                filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+            }
+        }
+    </style>
+    <style>
+        body {
+            overscroll-behavior: none;
+            touch-action: manipulation;
+        }
+        canvas {
+            touch-action: none;
+            display: block;
+        }
+        .aim-line {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.5);
+            transform-origin: 0 50%;
+            pointer-events: none;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="bg-primary font-game text-white overflow-hidden h-screen flex flex-col">
+    <!-- 游戏头部 -->
+    <header class="bg-secondary p-3 flex justify-between items-center z-20">
+        <div class="text-lg font-bold">黑八桌球</div>
+        <div class="flex space-x-4">
+            <button id="restartBtn" class="p-2 bg-accent rounded-full hover:bg-opacity-80 transition-all duration-300">
+                <i class="fa fa-refresh"></i>
+            </button>
+            <button id="helpBtn" class="p-2 bg-accent rounded-full hover:bg-opacity-80 transition-all duration-300">
+                <i class="fa fa-question"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 游戏主区域 -->
+    <main class="flex-1 relative overflow-hidden">
+        <div id="gameContainer" class="absolute inset-0">
+            <!-- 游戏画布 -->
+            <canvas id="poolCanvas"></canvas>
+            <!-- 瞄准线 -->
+            <div id="aimLine" class="aim-line hidden"></div>
+        </div>
+    </main>
+
+    <!-- 游戏底部信息 -->
+    <footer class="bg-secondary p-3 z-20">
+        <div class="flex justify-between text-sm">
+            <div id="playerInfo">当前玩家: <span id="currentPlayer">白球</span></div>
+            <div id="gameStatus">准备就绪</div>
+        </div>
+    </footer>
+
+    <!-- 帮助模态框 -->
+    <div id="helpModal" class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-secondary rounded-lg p-6 max-w-sm w-full">
+            <h2 class="text-xl font-bold mb-4 text-center">游戏规则</h2>
+            <ul class="list-disc pl-5 space-y-2 mb-6">
+                <li>使用手指拖动来控制击球方向和力度</li>
+                <li>先打进一组球（全色或花色）的玩家需要最后打进黑八</li>
+                <li>如果在打进自己的球组前打进黑八，将输掉比赛</li>
+                <li>白球入袋或飞出球桌会导致自由球</li>
+            </ul>
+            <div class="flex justify-center">
+                <button id="closeHelpBtn" class="bg-accent px-4 py-2 rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                    明白了
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 游戏结束模态框 -->
+    <div id="gameOverModal" class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-secondary rounded-lg p-6 max-w-sm w-full">
+            <h2 id="gameOverTitle" class="text-2xl font-bold mb-2 text-center"></h2>
+            <p id="gameOverMessage" class="text-center mb-6"></p>
+            <div class="flex justify-center space-x-4">
+                <button id="playAgainBtn" class="bg-accent px-4 py-2 rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                    再玩一次
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>

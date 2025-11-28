@@ -1,0 +1,50 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+.game-container {
+    text-align: center;
+}
+
+h1 {
+    color: #333;
+}
+
+#gameCanvas {
+    border: 2px solid #333;
+    background-color: #0a6e0a;
+    border-radius: 5px;
+}
+
+.game-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    padding: 0 20px;
+}
+
+.player-turn, .ball-type {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#resetBtn {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#resetBtn:hover {
+    background-color: #45a049;
+}

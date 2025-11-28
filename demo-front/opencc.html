@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script>
+    window.__unocss = {
+      rules: [],
+      // presets: [ ],
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@unocss/runtime"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      position: relative;
+      background-color: #f8f9fa;
+    }
+
+    .sticky-top {
+      position: sticky;
+      top: 0;
+      /* 吸底元素距离顶部的距离 */
+      background-color: #fff;
+      padding: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .sticky-bottom {
+      position: sticky;
+      bottom: 0;
+      /* 吸底元素距离顶部的距离 */
+      background-color: #fff;
+      padding: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container" x-data="dropdown()">
+    <div class="sticky-top">
+      <div class="flex items-center justify-between">
+        <div>我是一个吸顶的元素！</div>
+        <!-- 转换模式选择器 -->
+        <div class="flex items-center space-x-2">
+          <label class="text-sm font-medium text-gray-700">转换模式:</label>
+          <select x-model="conversionMode"
+                  @change="changeConversionMode()"
+                  class="form-select text-sm rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+            <option value="hk">简体 → 香港繁体</option>
+            <option value="tw">简体 → 台湾繁体</option>
+            <option value="t">简体 → 繁体</option>
+            <option value="jp">简体 → 日本新字体</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <!-- 加载状态指示器 -->
+    <div x-show="isLoading"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         class="p-4 text-center bg-blue-50">
+      <p class="text-blue-600">正在加载转换器，请稍候...</p>
+      <div class="mt-2">
+        <div class="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+      </div>
+    </div>
+
+    <!-- 错误信息显示 -->
+    <div x-show="error"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         class="p-4 m-4 text-center bg-red-50 rounded-lg">
+      <p class="text-red-600 mb-2" x-text="error"></p>
+      <button @click="retryConversion()"
+              class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors">
+        重试转换
+      </button>
+    </div>
+
+    <!-- 内容显示 -->
+    <template x-for="(item, index) in list" :key="index"
+              x-show="!isLoading && !error"
+              x-transition:enter="transition ease-out duration-300"
+              x-transition:enter-start="opacity-0 transform translate-y-4"
+              x-transition:enter-end="opacity-100 transform translate-y-0">
+      <div class="p-4 border-b">
+        <h2 class="mb-2 text-gray-700">原文:</h2>
+        <p class="mb-4" x-text="item"></p>
+
+        <h2 class="mb-2 text-gray-700">繁体转换:</h2>
+        <p x-text="convertedList[index] || '转换中...'"></p>
+      </div>
+    </template>
+    <div class="sticky-bottom">
+      我是一个吸底的元素！
+    </div>
+  </div>
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('dropdown', () => ({
+        // 数据部分
+        list: ['花褪残红青杏小，燕子飞时，绿水人家绕，枝上柳绵吹又少，天涯何处无芳草；墙里秋千墙外道，墙外行人，墙里佳人笑，笑渐不闻声渐悄，多情却被无情恼。', '忧郁的台湾乌龟'],
+        convertedList: [],
+        isLoading: true,
+        error: null,
+
+        // 转换模式，可以扩展为用户可选
+        conversionMode: 'hk', // 'hk', 'tw', 't' 等
+
+        async converter(str) {
+          try {
+            if (!window.OpenCC) {
+              window.OpenCC = await import('https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/esm/cn2t.js'); // 等待OpenCC加载完成
+            }
+
+            const convertFn = window.OpenCC.Converter({ from: 'cn', to: this.conversionMode });
+            return convertFn(str);
+          } catch (error) {
+            console.error('Conversion failed:', error);
+            this.error = '转换失败: ' + (error.message || '未知错误');
+            return str; // 发生错误时返回原文
+          }
+        },
+
+        async init() {
+          this.isLoading = true;
+          this.error = null;
+
+          try {
+            // 等待所有转换完成
+            this.convertedList = await Promise.all(this.list.map(str => this.converter(str)));
+          } catch (error) {
+            console.error('Initialization failed:', error);
+            this.error = '初始化失败: ' + (error.message || '未知错误');
+          } finally {
+            this.isLoading = false;
+          }
+        },
+
+        // 重试转换功能
+        async retryConversion() {
+          // 重置状态
+          this.error = null;
+          this.isLoading = true;
+
+          // 重新初始化
+          await this.init();
+        },
+
+        changeConversionMode() {
+          this.isLoading = true;
+          this.error = null;
+
+          // 重新转换列表
+          this.convertedList = [];
+          Promise.all(this.list.map(str => this.converter(str)))
+            .then(results => {
+              this.convertedList = results;
+            })
+            .catch(error => {
+              console.error('Conversion failed:', error);
+              this.error = '转换失败: ' + (error.message || '未知错误');
+            })
+            .finally(() => {
+              this.isLoading = false;
+            });
+        }
+      }));
+    });
+  </script>
+
+</body>
+
+</html>
