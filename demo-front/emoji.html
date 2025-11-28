@@ -8,6 +8,7 @@
 </head>
 
 <body>
+    <h3 id="out"></h3>
     <!-- <script src="https://raw.githubusercontent.com/joypixels/emoji-toolkit/master/lib/js/joypixels.min.js"></script> -->
     <script src="./joypixels.min.js"></script>
     <script>
@@ -26,7 +27,7 @@
             var regStr = `(${emojiList.join('|')})`
             var reg = new RegExp(regStr)
             var len = str.replace(reg, '_').length
-            console.log(`${str}的长度为：${len}`)
+            document.getElementById('out').innerHTML += `${str}的长度为：${len}<br>`;
             return len
         }
 
