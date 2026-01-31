@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>热力图实现</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #1a1a1a;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      color: #fff;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .container {
+      max-width: 100%;
+      overflow-x: auto;
+      padding: 10px;
+      background-color: #2a2a2a;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    table {
+      border-collapse: separate;
+      border-spacing: 1px;
+      margin: 0 auto;
+    }
+    td {
+      width: 28px;
+      height: 28px;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: bold;
+      font-size: 11px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+    }
+    td:hover {
+      transform: scale(1.5);
+      z-index: 10;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    }
+    td::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+      pointer-events: none;
+    }
+    .legend {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+      flex-wrap: wrap;
+      background-color: #2a2a2a;
+      padding: 10px;
+      border-radius: 8px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin: 0 10px 8px 0;
+      font-size: 13px;
+    }
+    .legend-color {
+      width: 20px;
+      height: 20px;
+      margin-right: 5px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 2px;
+    }
+    .footer {
+      margin-top: 20px;
+      text-align: center;
+      color: #888;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <h1>热力图展示</h1>
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-color" style="background-color: #4d9221;"></div>
+      <span>低值 (18-20)</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color" style="background-color: #7fbc41;"></div>
+      <span>中低值 (20-22)</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color" style="background-color: #b8e186;"></div>
+      <span>中值 (22-24)</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color" style="background-color: #fdae61;"></div>
+      <span>中高值 (24-27)</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color" style="background-color: #f46d43;"></div>
+      <span>高值 (27-30)</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color" style="background-color: #d73027;"></div>
+      <span>极高值 (30+)</span>
+    </div>
+  </div>
+  <div class="container">
+    <table id="heatmap"></table>
+  </div>
+  <div class="footer">
+    热力图数据可视化展示 - 鼠标悬停查看详细数值
+  </div>
+
+  <script>
+    const heatmap = document.getElementById('heatmap');
+    const rows = 10;
+    const cols = 24; // 根据图片宽度调整
+
+    // 模拟数据生成 - 更接近原始图片的分布
+    function generateData() {
+      const data = [];
+      for (let i = 0; i < rows; i++) {
+        const row = [];
+        for (let j = 0; j < cols; j++) {
+          // 基础值范围18-20
+          let value = 18 + Math.random() * 2;
+          
+          // 右侧区域热点 (更接近原始图片的分布)
+          if (j > 16) {
+            // 增加右侧区域的整体值
+            value += 1 + Math.random() * 3;
+            
+            // 右侧区域的热点增强
+            if (i === 5 || i === 6 || i === 7) {
+              value += 2 + Math.random() * 6;
+            }
+          }
+          
+          // 中间区域热点 (第8-12列)
+          if (j >= 8 && j <= 12) {
+            // 中间区域的热点分布
+            if ((i === 2 || i === 3 || i === 8) && Math.random() > 0.5) {
+              value += 2 + Math.random() * 4;
+            }
+          }
+          
+          // 左上区域热点
+          if ((i < 4 && j < 6) && Math.random() > 0.7) {
+            value += 1 + Math.random() * 3;
+          }
+          
+          // 特定位置高热点 (对应原始图片中的最高值区域)
+          if ((i === 6 && j === 22) || (i === 7 && j === 21) || (i === 7 && j === 22)) {
+            value = 30 + Math.random() * 1.6;
+          }
+          
+          // 第二行的高值区域
+          if (i === 1 && j === 2) {
+            value = 29 + Math.random() * 1;
+          }
+          
+          // 第八行的高值区域
+          if (i === 7 && j === 11) {
+            value = 27 + Math.random() * 2;
+          }
+          
+          // 确保值的范围和精度
+          value = Math.round(value * 10) / 10;
+          row.push(value);
+        }
+        data.push(row);
+      }
+      return data;
+    }
+
+    // 根据值获取颜色 (使用更平滑的颜色过渡)
+    function getColor(value) {
+      // 使用ColorBrewer的配色方案，从绿色到红色
+      const colorScale = [
+        [77, 146, 33],   // 18-20
+        [127, 188, 65],  // 20-22
+        [184, 225, 134], // 22-24
+        [253, 174, 97],  // 24-27
+        [244, 109, 67],  // 27-30
+        [215, 48, 39]    // 30+
+      ];
+
+      let index;
+      if (value < 20) {
+        index = 0;
+      } else if (value < 22) {
+        index = 1;
+      } else if (value < 24) {
+        index = 2;
+      } else if (value < 27) {
+        index = 3;
+      } else if (value < 30) {
+        index = 4;
+      } else {
+        index = 5;
+      }
+
+      // 获取基础颜色
+      const [r, g, b] = colorScale[index];
+
+      // 添加轻微的亮度变化，增加视觉多样性
+      const brightnessFactor = 1 + (Math.random() * 0.2 - 0.1);
+      const newR = Math.min(255, Math.max(0, Math.round(r * brightnessFactor)));
+      const newG = Math.min(255, Math.max(0, Math.round(g * brightnessFactor)));
+      const newB = Math.min(255, Math.max(0, Math.round(b * brightnessFactor)));
+
+      return `rgb(${newR}, ${newG}, ${newB})`;
+    }
+
+    // 生成热力图
+    function createHeatmap() {
+      const data = generateData();
+
+      for (let i = 0; i < rows; i++) {
+        const tr = document.createElement('tr');
+        for (let j = 0; j < cols; j++) {
+          const td = document.createElement('td');
+          const value = data[i][j];
+          td.textContent = value;
+          td.style.backgroundColor = getColor(value);
+          td.title = `值: ${value}`;
+          tr.appendChild(td);
+        }
+        heatmap.appendChild(tr);
+      }
+    }
+
+    // 创建热力图
+    createHeatmap();
+  </script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+import fs from 'fs'
+import jsonData from './海外版本地中英词库.json' with {type: 'json'}
+
+let object = {
+  "这个页面你不能进": "You cannot access this page.",
+  "请检查您输入的网址是否正确，请点击以下按钮返回首页": "You cannot access this page.",
+  "返回首页": "Home",
+  "美亚商旅": "Meiya TMC",
+  "正在加载": "Loading",
+  "正在加载...": "Loading...",
+  "加载中": "Loading",
+  "让企业商旅管理简单可控！": "Make business travel management simple and controllable!",
+  "数字商旅、智慧商旅、新标准商旅建设者": "Digital Business Travel, Smart Business Travel, and New Standard Business Travel Builders.",
+  "美亚商旅不需收取任何应用使用费用": " ",
+  "差旅预订": "Travel booking",
+  "点击按钮开始智能验证": "Click the button to start intelligent verification",
+  "智能检测中": "Intelligent detection in progress...",
+  "验证失败，请再次点击按钮刷新": "Authentication failed. Please click the button again to refresh",
+  "验证成功": "Validation succeeded",
+  "退出": "Logout",
+  "已登录": "Logged in",
+  "确认登录": "Confirm login",
+  "账号": "Account Number",
+  "请输入账号": "Please enter your account",
+  "密码": "Password",
+  "请输入密码": "Please input a password",
+  "登录": "Login",
+  "请先进行安全认证！": "Please first obtain a security certification!",
+  "该手机号未绑定账号": "This mobile phone number is not bound to an account",
+  "请输入需要绑定的账号": "Please enter an account to be bound",
+  "请输入旧密码": "Please enter old password",
+  "绑定账号": "Bind an account",
+  "阅读并同意": "Read and agree to",
+  "隐私条款": "Privacy Policy",
+  "请先阅读并同意《隐私条款》": "please read and agree to the Privacy Policy first"
+}
+
+
+for (const key in object) {
+  if (Object.prototype.hasOwnProperty.call(object, key)) {
+    if (jsonData[key]) {
+      object[key] = jsonData[key]
+    }
+  }
+}
+
+// 将结果写入json文件
+fs.writeFileSync('./data.json', JSON.stringify(object, null, 2))

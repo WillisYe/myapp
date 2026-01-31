@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>热力图展示</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000;
+        }
+        .heatmap {
+            display: grid;
+            grid-template-columns: repeat(10, 50px);
+            grid-gap: 2px;
+        }
+        .cell {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            color: white;
+            border: 1px solid #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="heatmap" id="heatmap"></div>
+
+<script>
+    // 数据示例（简化版）
+    const data = [
+        [19.8, 19.9, 26.1, 19.8, 20.1, 27.1, 20.6, 20.8, 29.1, 20],
+        [19.8, 19.9, 26.6, 20.3, 20.3, 28.4, 21.1, 22.6, 29.7, 20],
+        // ... 更多数据行
+    ];
+
+    const heatmap = document.getElementById('heatmap');
+
+    function getColor(value) {
+        // 根据值计算颜色
+        const min = 19;
+        const max = 31.6;
+        const ratio = (value - min) / (max - min);
+        const hue = 120 * (1 - ratio); // 从绿色到黄色
+        return `hsl(${hue}, 100%, 50%)`;
+    }
+
+    data.forEach(row => {
+        row.forEach(value => {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.style.backgroundColor = getColor(value);
+            cell.textContent = value.toFixed(1);
+            heatmap.appendChild(cell);
+        });
+    });
+</script>
+
+</body>
+</html>

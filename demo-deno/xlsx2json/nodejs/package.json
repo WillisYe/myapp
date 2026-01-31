@@ -1,0 +1,21 @@
+{
+  "name": "xlsx2json-nodejs",
+  "version": "1.0.0",
+  "description": "将XLSX表格文件转换为JSON文件的Node.js工具",
+  "main": "xlsx2json.js",
+  "scripts": {
+    "start": "node xlsx2json.js",
+    "convert": "node xlsx2json.js",
+    "batch": "node batch-convert.js",
+    "simple": "node xlsx2json-simple.js"
+  },
+  "keywords": ["xlsx", "json", "converter", "excel"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

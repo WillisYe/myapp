@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>热力图演示</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+    table {
+      border-collapse: collapse;
+      margin: 20px auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    td {
+      width: 40px;
+      height: 40px;
+      text-align: center;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    td:hover {
+      transform: scale(1.2);
+      z-index: 10;
+      position: relative;
+    }
+    .legend {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin: 0 10px;
+    }
+    .legend-color {
+      width: 20px;
+      height: 20px;
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>热力图演示</h1>
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-color" style="background-color: #4d9221;"></div>
+      <span>低值</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color" style="background-color: #7fbc41;"></div>
+      <span>中低值</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color" style="background-color: #b8e186;"></div>
+      <span>中值</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color" style="background-color: #f7f7f7;"></div>
+      <span>中高值</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color" style="background-color: #f1b6da;"></div>
+      <span>高值</span>
+    </div>
+  </div>
+  <table id="heatmap"></table>
+
+  <script>
+    const heatmap = document.getElementById('heatmap');
+    const rows = 10;
+    const cols = 10;
+    
+    // 生成模拟数据
+    function generateData() {
+      const data = [];
+      for (let i = 0; i < rows; i++) {
+        const row = [];
+        for (let j = 0; j < cols; j++) {
+          // 创建一些热点区域
+          const distanceToCenter1 = Math.sqrt(Math.pow(i - 3, 2) + Math.pow(j - 7, 2));
+          const distanceToCenter2 = Math.sqrt(Math.pow(i - 7, 2) + Math.pow(j - 2, 2));
+          
+          let value = 10 + Math.random() * 5;
+          value += 30 * Math.exp(-distanceToCenter1 / 2);
+          value += 25 * Math.exp(-distanceToCenter2 / 3);
+          value = Math.min(100, Math.max(0, Math.round(value * 10) / 10));
+          row.push(value);
+        }
+        data.push(row);
+      }
+      return data;
+    }
+
+    const data = generateData();
+    
+    // 根据数值获取颜色
+    function getColor(value) {
+      const colors = [
+        { threshold: 20, color: '#4d9221' },  // 绿色
+        { threshold: 40, color: '#7fbc41' },  // 浅绿
+        { threshold: 60, color: '#b8e186' },  // 黄绿
+        { threshold: 80, color: '#f7f7f7' },  // 白色
+        { threshold: 101, color: '#f1b6da' }  // 粉色
+      ];
+      
+      for (const colorInfo of colors) {
+        if (value <= colorInfo.threshold) {
+          return colorInfo.color;
+        }
+      }
+      return '#f1b6da';
+    }
+
+    // 渲染热力图
+    data.forEach((row, i) => {
+      const tr = document.createElement('tr');
+      row.forEach((value, j) => {
+        const td = document.createElement('td');
+        td.textContent = value;
+        td.style.backgroundColor = getColor(value);
+        td.title = `行 ${i+1}, 列 ${j+1}: ${value}`;
+        tr.appendChild(td);
+      });
+      heatmap.appendChild(tr);
+    });
+  </script>
+</body>
+</html>

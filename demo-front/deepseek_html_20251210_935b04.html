@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>PDF 下载测试 - 中文文件名</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <h1>PDF 下载测试</h1>
+
+    <div>
+        <h2>测试链接</h2>
+        <ul>
+            <li>
+                <a href="//testnewfile.shinetour.com/testtemp/ShineTour/DownLoadInventoryTemp/2025/12/10/ad7b61280df14303b1f28fd7e69d8640/2025-12-25%E7%94%B5%E5%AD%90%E8%A1%8C%E7%A8%8B%E5%8D%95-STROSIN%20ALEXIS%209C.pdf?Expires=1765954395&OSSAccessKeyId=LTAI5t7EEWcS99pCkJeNmCw7&Signature=sYJZxaXd%2BILjVNwbuGRGZSZd444%3D" download="中文测试文件.pdf">
+                    //testnewfile.shinetour.com/testtemp/ShineTour/DownLoadInventoryTemp/2025/12/10/ad7b61280df14303b1f28fd7e69d8640/2025-12-25%E7%94%B5%E5%AD%90%E8%A1%8C%E7%A8%8B%E5%8D%95-STROSIN%20ALEXIS%209C.pdf?Expires=1765954395&OSSAccessKeyId=LTAI5t7EEWcS99pCkJeNmCw7&Signature=sYJZxaXd%2BILjVNwbuGRGZSZd444%3D
+                </a>
+            </li>
+            <li>
+                <a href="https://testincimage.shinetour.com/inc/inc/pdf/%E5%B9%BF%E4%B8%9C%E7%BE%8E%E4%BA%9A%E5%A2%9E%E5%80%BC%E7%94%B5%E4%BF%A1%E4%B8%9A%E5%8A%A1%E7%BB%8F%E8%90%A5%E8%AE%B8%E5%8F%AF%E8%AF%812027.10.31.pdf">
+                    https://testincimage.shinetour.com/inc/inc/pdf/%E5%B9%BF%E4%B8%9C%E7%BE%8E%E4%BA%9A%E5%A2%9E%E5%80%BC%E7%94%B5%E4%BF%A1%E4%B8%9A%E5%8A%A1%E7%BB%8F%E8%90%A5%E8%AE%B8%E5%8F%AF%E8%AF%812027.10.31.pdf
+                </a>
+            </li>
+            <li>
+                <button onclick="downloadViaAPI()">
+                    方法3：通过API下载
+                </button>
+            </li>
+            <li>
+                <a href="//testnewfile.shinetour.com/testtemp/ShineTour/DownLoadInventoryTemp/2025/12/10/ad7b61280df14303b1f28fd7e69d8640/2025-12-25%E7%94%B5%E5%AD%90%E8%A1%8C%E7%A8%8B%E5%8D%95-STROSIN%20ALEXIS%209C.pdf?Expires=1765954395&OSSAccessKeyId=LTAI5t7EEWcS99pCkJeNmCw7&Signature=sYJZxaXd%2BILjVNwbuGRGZSZd444%3D">
+                    方法4：静态文件直接链接
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div id="debug-info"></div>
+
+    <script>
+        // 测试函数
+        async function downloadViaAPI() {
+            downloadFile('//testnewfile.shinetour.com/testtemp/ShineTour/DownLoadInventoryTemp/2025/12/10/ad7b61280df14303b1f28fd7e69d8640/2025-12-25%E7%94%B5%E5%AD%90%E8%A1%8C%E7%A8%8B%E5%8D%95-STROSIN%20ALEXIS%209C.pdf?Expires=1765954395&OSSAccessKeyId=LTAI5t7EEWcS99pCkJeNmCw7&Signature=sYJZxaXd%2BILjVNwbuGRGZSZd444%3D', 'test.pdf')
+        }
+
+        // 检测 iOS Safari
+        function isIOSSafari() {
+            const ua = navigator.userAgent;
+            return /iPad|iPhone|iPod/.test(ua) && /WebKit/.test(ua) && !/CriOS/.test(ua);
+        }
+
+        // iOS Safari 特殊处理
+        function downloadFile(url, filename) {
+            if (isIOSSafari()) {
+                // iOS Safari 使用 iframe 下载
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = url;
+                document.body.appendChild(iframe);
+
+                // 设置超时清理
+                setTimeout(() => {
+                    document.body.removeChild(iframe);
+                }, 10000);
+
+                return;
+            }
+
+            // 其他浏览器使用标准方式
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+        }
+
+        // 检测用户环境
+        function detectEnvironment() {
+            const ua = navigator.userAgent;
+            const isIOS = /iPad|iPhone|iPod/.test(ua);
+            const isSafari = /Safari/.test(ua) && !/Chrome/.test(ua);
+
+            document.getElementById('debug-info').innerHTML = `
+                <h3>环境信息</h3>
+                <p>User Agent: ${ua}</p>
+                <p>iOS: ${isIOS ? '是' : '否'}</p>
+                <p>Safari: ${isSafari ? '是' : '否'}</p>
+                <p>当前时间: ${new Date().toLocaleString()}</p>
+            `;
+        }
+
+        // 页面加载时检测
+        detectEnvironment();
+    </script>
+</body>
+
+</html>
