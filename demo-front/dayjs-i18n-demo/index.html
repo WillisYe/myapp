@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dayjs I18n Demo</title>
+
+    <!-- 引入 dayjs 核心库 -->
+    <script src="https://unpkg.com/dayjs@1.11.19/dayjs.min.js"></script>
+
+    <!-- 引入 unocss -->
+    <script src="https://unpkg.com/@unocss/runtime"></script>
+    <!-- 引入 alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- 引入应用脚本 -->
+    <script src="app.js"></script>
+</head>
+<body class="font-sans bg-gray-100 p-5 text-gray-800 leading-relaxed" x-data="dayjsDemo">
+    <div class="container mx-auto max-w-5xl bg-white p-8 rounded-lg shadow-md">
+        <h1 class="text-center mb-8 text-green-600 font-bold">Dayjs I18n 功能演示</h1>
+
+        <div class="language-selector text-center mb-8">
+            <label class="mr-3 font-bold">选择语言：</label>
+            <select class="px-4 py-2 border border-gray-300 rounded-md text-base" x-model="currentLang" @change="changeLanguage">
+                <template x-for="lang in languages" :key="lang.value">
+                    <option :value="lang.value" x-text="`${lang.label} (${lang.chineseName})${lang.isUnsupported ? ' [可能不支持] ⚠️' : ''}`"></option>
+                </template>
+            </select>
+        </div>
+
+        <div class="test-button text-center mb-8">
+            <button class="px-6 py-3 bg-green-600 text-white rounded-md font-bold hover:bg-green-700 transition-colors" @click="testLanguages">测试所有语言格式化</button>
+        </div>
+
+        <h2 class="mt-5 mb-4 text-gray-800 border-b-2 border-green-600 pb-2 font-semibold">基本日期时间格式化</h2>
+        <div class="demo-section mb-8 p-5 bg-gray-50 rounded-md">
+            <div class="demo-item mb-4">
+                <label class="inline-block w-40 font-bold">当前时间：</label>
+                <span class="font-mono bg-gray-100 px-2 py-1 rounded" x-text="currentTime"></span>
+            </div>
+            <div class="demo-item mb-4">
+                <label class="inline-block w-40 font-bold">完整日期时间：</label>
+                <span class="font-mono bg-gray-100 px-2 py-1 rounded" x-text="fullDateTime"></span>
+            </div>
+            <div class="demo-item mb-4">
+                <label class="inline-block w-40 font-bold">格式化日期：</label>
+                <span class="font-mono bg-gray-100 px-2 py-1 rounded" x-text="formattedDate"></span>
+            </div>
+            <div class="demo-item mb-4">
+                <label class="inline-block w-40 font-bold">星期几：</label>
+                <span class="font-mono bg-gray-100 px-2 py-1 rounded" x-text="dayOfWeek"></span>
+            </div>
+            <div class="demo-item mb-4">
+                <label class="inline-block w-40 font-bold">月份：</label>
+                <span class="font-mono bg-gray-100 px-2 py-1 rounded" x-text="month"></span>
+            </div>
+        </div>
+
+        <div x-show="testResults.length > 0" class="test-results mt-8">
+            <h2 class="mt-5 mb-4 text-gray-800 border-b-2 border-green-600 pb-2 font-semibold">测试结果</h2>
+            <div class="demo-section p-5 bg-gray-50 rounded-md">
+                <div class="mb-4">
+                    <span class="font-bold">测试统计：</span>
+                    <span x-text="`通过: ${testResults.filter(r => r.status === 'pass').length}, 失败: ${testResults.filter(r => r.status === 'fail').length}, 总计: ${testResults.length}`"></span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white table-auto">
+                        <thead>
+                            <tr>
+                                <th class="py-2 px-4 border-b w-16">序号</th>
+                                <th class="py-2 px-4 border-b">语言</th>
+                                <th class="py-2 px-4 border-b w-20">状态</th>
+                                <th class="py-2 px-4 border-b">结果</th>
+                                <th class="py-2 px-4 border-b">完整日期时间</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template x-for="(result, index) in testResults" :key="result.lang">
+                                <tr :class="result.status === 'pass' ? 'bg-green-50' : 'bg-red-50'">
+                                    <td class="py-2 px-4 border-b text-center" x-text="index+1"></td>
+                                    <td class="py-2 px-4 border-b" x-text="result.lang"></td>
+                                    <td class="py-2 px-4 border-b text-center">
+                                        <span :class="result.status === 'pass' ? 'text-green-600 font-bold' : 'text-red-600 font-bold'" x-text="result.status === 'pass' ? '通过' : '失败'"></span>
+                                    </td>
+                                    <td class="py-2 px-4 border-b" x-text="result.message"></td>
+                                    <td class="py-2 px-4 border-b font-mono" x-text="result.fullDateTime"></td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer text-center mt-10 pt-5 border-t border-gray-300 text-gray-500">
+            <p>Dayjs I18n 功能演示 | 2026</p>
+        </div>
+    </div>
+
+
+</body>
+</html>

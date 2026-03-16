@@ -1,0 +1,185 @@
+{
+  "unsupportedLanguages": [
+    {
+      "value": "x-pseudo",
+      "label": "Pseudo",
+      "intlCode": "x-pseudo",
+      "reason": "可能不被 Intl.DateTimeFormat 支持，因为它是一个伪语言代码"
+    },
+    {
+      "value": "tlh",
+      "label": "Klingon",
+      "intlCode": "tlh",
+      "reason": "可能不被 Intl.DateTimeFormat 支持，因为它是一个虚构的语言"
+    },
+    {
+      "value": "tzl",
+      "label": "Talossan",
+      "intlCode": "tzl",
+      "reason": "可能不被 Intl.DateTimeFormat 支持，因为它是一个人造语言"
+    },
+    {
+      "value": "bi",
+      "label": "Bislama",
+      "intlCode": "bi-VU",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持，因为它是一种克里奥尔语"
+    },
+    {
+      "value": "bm",
+      "label": "Bambara",
+      "intlCode": "bm-ML",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持"
+    },
+    {
+      "value": "bo",
+      "label": "Tibetan",
+      "intlCode": "bo-CN",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持"
+    },
+    {
+      "value": "cv",
+      "label": "Chuvash",
+      "intlCode": "cv-RU",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持"
+    },
+    {
+      "value": "dv",
+      "label": "Maldivian",
+      "intlCode": "dv-MV",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持"
+    },
+    {
+      "value": "eo",
+      "label": "Esperanto",
+      "intlCode": "eo",
+      "reason": "可能不被 Intl.DateTimeFormat 支持，因为它是一个人造语言"
+    },
+    {
+      "value": "gom-latn",
+      "label": "Konkani Latin script",
+      "intlCode": "gom-IN",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持"
+    },
+    {
+      "value": "ku",
+      "label": "Kurdish",
+      "intlCode": "ku-TR",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持"
+    },
+    {
+      "value": "ky",
+      "label": "Kyrgyz",
+      "intlCode": "ky-KG",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持"
+    },
+    {
+      "value": "lo",
+      "label": "Lao",
+      "intlCode": "lo-LA",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持"
+    },
+    {
+      "value": "me",
+      "label": "Montenegrin",
+      "intlCode": "me-ME",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持"
+    },
+    {
+      "value": "mi",
+      "label": "Maori",
+      "intlCode": "mi-NZ",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持"
+    },
+    {
+      "value": "mn",
+      "label": "Mongolian",
+      "intlCode": "mn-MN",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持"
+    },
+    {
+      "value": "my",
+      "label": "Burmese",
+      "intlCode": "my-MM",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持"
+    },
+    {
+      "value": "oc-lnc",
+      "label": "Occitan, lengadocian dialecte",
+      "intlCode": "oc-FR",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持"
+    },
+    {
+      "value": "rn",
+      "label": "Kirundi",
+      "intlCode": "rn-BI",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持"
+    },
+    {
+      "value": "rw",
+      "label": "Kinyarwanda (Rwanda)",
+      "intlCode": "rw-RW",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持"
+    },
+    {
+      "value": "sd",
+      "label": "Sindhi",
+      "intlCode": "sd-PK",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持"
+    },
+    {
+      "value": "se",
+      "label": "Northern Sami",
+      "intlCode": "se-SE",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持"
+    },
+    {
+      "value": "ss",
+      "label": "siSwati",
+      "intlCode": "ss-SZ",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持"
+    },
+    {
+      "value": "tet",
+      "label": "Tetun Dili (East Timor)",
+      "intlCode": "tet-TL",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持"
+    },
+    {
+      "value": "tg",
+      "label": "Tajik",
+      "intlCode": "tg-TJ",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持"
+    },
+    {
+      "value": "tk",
+      "label": "Turkmen",
+      "intlCode": "tk-TM",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持"
+    },
+    {
+      "value": "tzm-latn",
+      "label": "Central Atlas Tamazight Latin",
+      "intlCode": "tzm-Latn-MA",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持"
+    },
+    {
+      "value": "tzm",
+      "label": "Central Atlas Tamazight",
+      "intlCode": "tzm-MA",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持"
+    },
+    {
+      "value": "ug-cn",
+      "label": "Uyghur (China)",
+      "intlCode": "ug-CN",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持"
+    },
+    {
+      "value": "yo",
+      "label": "Yoruba Nigeria",
+      "intlCode": "yo-NG",
+      "reason": "可能不被 Intl.DateTimeFormat 完全支持"
+    }
+  ],
+  "note": "此列表基于对 Intl.DateTimeFormat 支持的语言范围的一般理解，实际支持情况可能因浏览器和环境而异。"
+}

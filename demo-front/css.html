@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS 新特性 Demo - 2026</title>
+    <style>
+        @layer reset, base, components, utilities;
+
+        @layer reset {
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                background: linear-gradient(135deg, oklch(95% 0.02 240) 0%, oklch(98% 0.01 180) 100%);
+                min-height: 100vh;
+            }
+        }
+
+        @layer base {
+            h1, h2, h3 {
+                text-wrap: balance;
+                color: oklch(30% 0.05 240);
+                margin-bottom: 1rem;
+            }
+
+            p {
+                margin-bottom: 0.5rem;
+            }
+
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 2rem;
+            }
+
+            section {
+                background: white;
+                border-radius: 16px;
+                padding: 2rem;
+                margin-bottom: 2rem;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            }
+        }
+
+        @layer components {
+            .demo-header {
+                & h1 {
+                    font-size: clamp(2rem, 5vw, 3rem);
+                    background: linear-gradient(135deg,
+                        oklch(60% 0.15 240),
+                        oklch(70% 0.12 180)
+                    );
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                }
+
+                & .subtitle {
+                    color: oklch(50% 0.05 240);
+                    font-size: 1.1rem;
+                }
+            }
+
+            .feature-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1.5rem;
+                margin-top: 1.5rem;
+            }
+
+            .feature-card {
+                background: oklch(98% 0.01 240);
+                border: 2px solid oklch(90% 0.02 240);
+                border-radius: 12px;
+                padding: 1.5rem;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+                &:hover {
+                    transform: translateY(-4px);
+                    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+                    border-color: oklch(70% 0.08 240);
+                }
+
+                & h3 {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    font-size: 1.3rem;
+                    color: oklch(40% 0.1 240);
+
+                    &::before {
+                        content: '✨';
+                        font-size: 1.5rem;
+                    }
+                }
+
+                & .browser-support {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 0.5rem;
+                    margin: 0.5rem 0;
+
+                    & span {
+                        font-size: 0.75rem;
+                        padding: 0.25rem 0.75rem;
+                        background: oklch(90% 0.03 240);
+                        border-radius: 12px;
+                        color: oklch(35% 0.05 240);
+                        font-weight: 500;
+                    }
+                }
+            }
+
+            .code-preview {
+                background: oklch(20% 0.05 240);
+                color: oklch(95% 0.02 180);
+                padding: 1rem;
+                border-radius: 8px;
+                font-family: 'Fira Code', 'Consolas', monospace;
+                font-size: 0.85rem;
+                overflow-x: auto;
+                margin: 1rem 0;
+
+                & code {
+                    white-space: pre;
+                }
+            }
+
+            .aspect-demo {
+                aspect-ratio: 16 / 9;
+                background: linear-gradient(135deg,
+                    oklch(65% 0.12 240),
+                    oklch(75% 0.1 180)
+                );
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-weight: bold;
+                font-size: 1.5rem;
+                margin: 1rem 0;
+            }
+
+            .color-demo {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 1rem;
+                margin: 1rem 0;
+
+                & .color-box {
+                    aspect-ratio: 1;
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-weight: bold;
+                    font-size: 0.9rem;
+                    text-align: center;
+                    padding: 0.5rem;
+                }
+
+                & .oklch-primary {
+                    background: oklch(65% 0.15 240);
+                }
+
+                & .oklch-secondary {
+                    background: oklch(70% 0.12 180);
+                }
+
+                & .oklch-accent {
+                    background: oklch(75% 0.18 60);
+                }
+
+                & .mixed-color {
+                    background: color-mix(in oklch,
+                        oklch(65% 0.15 240) 60%,
+                        oklch(75% 0.18 60)
+                    );
+                }
+            }
+        }
+
+        @layer utilities {
+            .rating {
+                display: inline-flex;
+                gap: 0.25rem;
+                font-size: 1.2rem;
+                margin: 0.5rem 0;
+            }
+
+            .badge {
+                display: inline-block;
+                padding: 0.25rem 0.75rem;
+                border-radius: 12px;
+                font-size: 0.85rem;
+                font-weight: 600;
+                margin-right: 0.5rem;
+
+                &.excellent {
+                    background: oklch(85% 0.12 150);
+                    color: oklch(30% 0.08 150);
+                }
+
+                &.good {
+                    background: oklch(85% 0.1 200);
+                    color: oklch(30% 0.06 200);
+                }
+            }
+        }
+
+        .container-query-demo {
+            container-type: inline-size;
+            container-name: card-container;
+            border: 3px dashed oklch(80% 0.05 240);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem 0;
+            background: oklch(97% 0.01 240);
+        }
+
+        .responsive-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+            @container card-container (min-width: 400px) {
+                & {
+                    display: grid;
+                    grid-template-columns: 1fr 2fr;
+                    gap: 1rem;
+                    padding: 1.5rem;
+                }
+
+                & .card-image {
+                    aspect-ratio: 1;
+                    background: linear-gradient(135deg,
+                        oklch(70% 0.1 240),
+                        oklch(80% 0.08 180)
+                    );
+                    border-radius: 8px;
+                }
+
+                & .card-content {
+                    & h4 {
+                        font-size: 1.5rem;
+                        color: oklch(35% 0.08 240);
+                    }
+                }
+            }
+
+            @container card-container (max-width: 399px) {
+                & {
+                    text-align: center;
+                }
+
+                & .card-image {
+                    aspect-ratio: 16 / 9;
+                    margin-bottom: 1rem;
+                    background: linear-gradient(135deg,
+                        oklch(75% 0.12 240),
+                        oklch(85% 0.1 180)
+                    );
+                    border-radius: 8px;
+                }
+            }
+        }
+
+        .nesting-demo {
+            .parent {
+                padding: 1.5rem;
+                background: oklch(95% 0.02 240);
+                border-radius: 8px;
+                border-left: 4px solid oklch(60% 0.12 240);
+
+                & .child {
+                    margin: 1rem 0;
+                    padding: 1rem;
+                    background: white;
+                    border-radius: 6px;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+                    & .grandchild {
+                        padding: 0.75rem;
+                        background: oklch(98% 0.01 180);
+                        border-radius: 4px;
+                        font-size: 0.9rem;
+                        color: oklch(40% 0.05 180);
+
+                        &:hover {
+                            background: oklch(90% 0.03 180);
+                            transform: translateX(4px);
+                            transition: all 0.2s ease;
+                        }
+                    }
+                }
+
+                &:hover {
+                    background: oklch(92% 0.03 240);
+                }
+            }
+        }
+
+        .layer-demo {
+            .priority-test {
+                padding: 1.5rem;
+                border-radius: 8px;
+                margin: 1rem 0;
+            }
+
+            @layer utilities {
+                .priority-test {
+                    background: oklch(85% 0.1 150) !important;
+                    color: oklch(30% 0.08 150);
+                }
+            }
+
+            @layer components {
+                .priority-test {
+                    background: oklch(85% 0.1 240);
+                    color: white;
+                }
+            }
+
+            @layer base {
+                .priority-test {
+                    background: oklch(50% 0.1 240);
+                    color: white;
+                }
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="demo-header">
+            <h1>CSS 新特性 Demo 2026</h1>
+            <p class="subtitle">探索已广泛支持的现代 CSS 特性</p>
+        </header>
+
+        <section>
+            <h2>📊 特性概览</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>Container Queries</h3>
+                    <div class="rating">⭐⭐⭐⭐⭐</div>
+                    <span class="badge excellent">支持度 95%+</span>
+                    <p>基于容器尺寸而非视口的响应式设计</p>
+                    <div class="browser-support">
+                        <span>Chrome 107+</span>
+                        <span>Firefox 110+</span>
+                        <span>Safari 16+</span>
+                        <span>Edge 105+</span>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h3>CSS Nesting</h3>
+                    <div class="rating">⭐⭐⭐⭐⭐</div>
+                    <span class="badge excellent">支持度 90%+</span>
+                    <p>原生嵌套语法，无需预处理器</p>
+                    <div class="browser-support">
+                        <span>Chrome 120+</span>
+                        <span>Firefox 117+</span>
+                        <span>Safari 17.2+</span>
+                        <span>Edge 120+</span>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h3>@layer</h3>
+                    <div class="rating">⭐⭐⭐⭐⭐</div>
+                    <span class="badge excellent">支持度 90%+</span>
+                    <p>层叠层管理，解决优先级冲突</p>
+                    <div class="browser-support">
+                        <span>Chrome 99+</span>
+                        <span>Firefox 97+</span>
+                        <span>Safari 15.4+</span>
+                        <span>Edge 99+</span>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h3>aspect-ratio</h3>
+                    <div class="rating">⭐⭐⭐⭐⭐</div>
+                    <span class="badge excellent">支持度 95%+</span>
+                    <p>轻松控制元素宽高比</p>
+                    <div class="browser-support">
+                        <span>Chrome 88+</span>
+                        <span>Firefox 89+</span>
+                        <span>Safari 15+</span>
+                        <span>Edge 88+</span>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h3>OKLCH 色彩空间</h3>
+                    <div class="rating">⭐⭐⭐⭐</div>
+                    <span class="badge good">支持度 85%+</span>
+                    <p>更符合人眼感知的颜色表示</p>
+                    <div class="browser-support">
+                        <span>Chrome 111+</span>
+                        <span>Firefox 113+</span>
+                        <span>Safari 16+</span>
+                        <span>Edge 111+</span>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h3>color-mix()</h3>
+                    <div class="rating">⭐⭐⭐⭐</div>
+                    <span class="badge good">支持度 85%+</span>
+                    <p>原生颜色混合功能</p>
+                    <div class="browser-support">
+                        <span>Chrome 111+</span>
+                        <span>Firefox 113+</span>
+                        <span>Safari 16+</span>
+                        <span>Edge 111+</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎯 Container Queries 演示</h2>
+            <p>调整浏览器窗口或父容器宽度，观察卡片布局变化：</p>
+
+            <div class="container-query-demo">
+                <div class="responsive-card">
+                    <div class="card-image"></div>
+                    <div class="card-content">
+                        <h4>响应式卡片</h4>
+                        <p>当容器宽度 ≥ 400px 时，采用双列布局；小于 400px 时，采用单列垂直布局。</p>
+                        <p style="color: oklch(50% 0.05 240); font-size: 0.9rem;">这就是容器查询的强大之处！</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-preview"><code>@layer components {
+  .card-container {
+    container-type: inline-size;
+    container-name: card-container;
+  }
+
+  .responsive-card {
+    /* 默认样式 */
+
+    @container card-container (min-width: 400px) {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+    }
+
+    @container card-container (max-width: 399px) {
+      text-align: center;
+    }
+  }
+}</code></div>
+        </section>
+
+        <section>
+            <h2>🌿 CSS Nesting 演示</h2>
+            <p>原生嵌套语法，让 CSS 更清晰易读：</p>
+
+            <div class="nesting-demo">
+                <div class="parent">
+                    <h4>父元素（hover 查看效果）</h4>
+                    <div class="child">
+                        <p>子元素</p>
+                        <div class="grandchild">
+                            孙元素（hover 有过渡效果）
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-preview"><code>@layer components {
+  .parent {
+    padding: 1.5rem;
+    background: oklch(95% 0.02 240);
+    border-left: 4px solid oklch(60% 0.12 240);
+
+    & .child {
+      margin: 1rem 0;
+      padding: 1rem;
+      background: white;
+
+      & .grandchild {
+        padding: 0.75rem;
+        background: oklch(98% 0.01 180);
+
+        &:hover {
+          background: oklch(90% 0.03 180);
+          transform: translateX(4px);
+        }
+      }
+    }
+
+    &:hover {
+      background: oklch(92% 0.03 240);
+    }
+  }
+}</code></div>
+        </section>
+
+        <section>
+            <h2>📐 aspect-ratio 演示</h2>
+            <p>轻松保持元素宽高比，无需 padding hack：</p>
+
+            <div class="aspect-demo">
+                16:9 宽高比
+            </div>
+
+            <div class="feature-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+                <div style="aspect-ratio: 1; background: oklch(70% 0.12 240); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                    1:1 正方形
+                </div>
+                <div style="aspect-ratio: 4 / 3; background: oklch(75% 0.1 180); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                    4:3
+                </div>
+                <div style="aspect-ratio: 21 / 9; background: oklch(65% 0.15 60); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                    21:9 超宽屏
+                </div>
+            </div>
+
+            <div class="code-preview"><code>.video-container {
+  aspect-ratio: 16 / 9;
+  background: linear-gradient(135deg,
+    oklch(65% 0.12 240),
+    oklch(75% 0.1 180)
+  );
+}
+
+.square {
+  aspect-ratio: 1;
+}
+
+.cinema {
+  aspect-ratio: 21 / 9;
+}</code></div>
+        </section>
+
+        <section>
+            <h2>🎨 OKLCH 色彩空间演示</h2>
+            <p>更符合人眼感知的颜色表示方式：</p>
+
+            <div class="color-demo">
+                <div class="color-box oklch-primary">
+                    OKLCH<br>
+                    L: 65%<br>
+                    C: 0.15<br>
+                    H: 240°<br>
+                    (蓝色)
+                </div>
+                <div class="color-box oklch-secondary">
+                    OKLCH<br>
+                    L: 70%<br>
+                    C: 0.12<br>
+                    H: 180°<br>
+                    (青色)
+                </div>
+                <div class="color-box oklch-accent">
+                    OKLCH<br>
+                    L: 75%<br>
+                    C: 0.18<br>
+                    H: 60°<br>
+                    (橙色)
+                </div>
+                <div class="color-box mixed-color">
+                    color-mix()<br>
+                    蓝色 60% +<br>
+                    橙色 40%
+                </div>
+            </div>
+
+            <div class="code-preview"><code>/* OKLCH 颜色定义 */
+.primary {
+  background: oklch(65% 0.15 240);
+}
+
+.secondary {
+  background: oklch(70% 0.12 180);
+}
+
+/* 颜色混合 */
+.mixed {
+  background: color-mix(
+    in oklch,
+    oklch(65% 0.15 240) 60%,
+    oklch(75% 0.18 60)
+  );
+}</code></div>
+        </section>
+
+        <section>
+            <h2>⚖️ @layer 层叠层优先级演示</h2>
+            <p>通过 @layer 精确控制 CSS 优先级，避免 specificity 战争：</p>
+
+            <div class="layer-demo">
+                <div class="priority-test">
+                    <h4>优先级测试</h4>
+                    <p>这个元素应用了 @layer utilities 的样式（最高优先级）</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.9rem;">
+                        层级顺序：reset → base → components → utilities
+                    </p>
+                </div>
+            </div>
+
+            <div class="code-preview"><code>/* 定义层顺序 */
+@layer reset, base, components, utilities;
+
+/* 低优先级层 */
+@layer base {
+  .priority-test {
+    background: oklch(50% 0.1 240);
+  }
+}
+
+/* 中优先级层 */
+@layer components {
+  .priority-test {
+    background: oklch(85% 0.1 240);
+  }
+}
+
+/* 高优先级层 */
+@layer utilities {
+  .priority-test {
+    background: oklch(85% 0.1 150) !important;
+    color: oklch(30% 0.08 150);
+  }
+}</code></div>
+        </section>
+
+        <section>
+            <h2>🎭 color-mix() 高级用法</h2>
+            <p>动态颜色混合，创建丰富的色彩效果：</p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                <div style="padding: 1rem; background: color-mix(in oklch, oklch(70% 0.12 240), white 30%); border-radius: 8px;">
+                    <p style="color: oklch(30% 0.05 240); font-weight: bold;">混合白色 30%</p>
+                    <p style="font-size: 0.85rem; opacity: 0.8;">提亮效果</p>
+                </div>
+                <div style="padding: 1rem; background: color-mix(in oklch, oklch(70% 0.12 240), black 20%); border-radius: 8px;">
+                    <p style="color: white; font-weight: bold;">混合黑色 20%</p>
+                    <p style="font-size: 0.85rem; opacity: 0.8;">加深效果</p>
+                </div>
+                <div style="padding: 1rem; background: color-mix(in oklch, oklch(70% 0.12 240), oklch(70% 0.12 60)); border-radius: 8px;">
+                    <p style="color: white; font-weight: bold;">蓝橙混合</p>
+                    <p style="font-size: 0.85rem; opacity: 0.8;">互补色混合</p>
+                </div>
+                <div style="padding: 1rem; background: color-mix(in oklch, oklch(65% 0.15 150), oklch(65% 0.15 240) 50%); border-radius: 8px;">
+                    <p style="color: white; font-weight: bold;">绿蓝各 50%</p>
+                    <p style="font-size: 0.85rem; opacity: 0.8;">等比例混合</p>
+                </div>
+            </div>
+
+            <div class="code-preview"><code>/* 提亮颜色 */
+.lighter {
+  background: color-mix(
+    in oklch,
+    oklch(70% 0.12 240),
+    white 30%
+  );
+}
+
+/* 加深颜色 */
+.darker {
+  background: color-mix(
+    in oklch,
+    oklch(70% 0.12 240),
+    black 20%
+  );
+}
+
+/* 颜色渐变混合 */
+.gradient-mix {
+  background: color-mix(
+    in oklch,
+    oklch(65% 0.15 150),
+    oklch(65% 0.15 240) 50%
+  );
+}</code></div>
+        </section>
+
+        <section>
+            <h2>💡 最佳实践建议</h2>
+            <div style="background: oklch(95% 0.02 150); padding: 1.5rem; border-radius: 8px; border-left: 4px solid oklch(60% 0.12 150);">
+                <h3 style="color: oklch(35% 0.08 150);">✅ 立即可用</h3>
+                <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: oklch(40% 0.05 150);">
+                    <li><strong>Container Queries</strong> - 组件化响应式设计的首选</li>
+                    <li><strong>CSS Nesting</strong> - 替代 Sass/Less 嵌套</li>
+                    <li><strong>@layer</strong> - 管理大型项目的 CSS 优先级</li>
+                    <li><strong>aspect-ratio</strong> - 媒体、卡片的宽高控制</li>
+                    <li><strong>OKLCH</strong> - 更精准的颜色控制</li>
+                </ul>
+            </div>
+
+            <div style="background: oklch(95% 0.02 200); padding: 1.5rem; border-radius: 8px; border-left: 4px solid oklch(60% 0.12 200); margin-top: 1rem;">
+                <h3 style="color: oklch(35% 0.08 200);">⚠️ 使用建议</h3>
+                <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: oklch(40% 0.05 200);">
+                    <li>配合 <code>@supports</code> 进行渐进增强</li>
+                    <li>为旧浏览器提供降级方案</li>
+                    <li>在生产环境前测试目标用户浏览器</li>
+                    <li>参考 caniuse.com 获取最新兼容性数据</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // 检测浏览器支持情况
+        const features = {
+            'Container Queries': CSS.supports('container-type: inline-size'),
+            'CSS Nesting': CSS.supports('selector(&)'),
+            '@layer': CSS.supports('@layer'),
+            'aspect-ratio': CSS.supports('aspect-ratio: 1'),
+            'OKLCH': CSS.supports('color: oklch(0 0 0)'),
+            'color-mix()': CSS.supports('background: color-mix(in srgb, red, blue)')
+        };
+
+        console.log('%c CSS 特性支持检测 ', 'background: oklch(60% 0.15 240); color: white; padding: 8px; border-radius: 4px; font-size: 14px;');
+        Object.entries(features).forEach(([feature, supported]) => {
+            console.log(`%c${feature}:`, 'font-weight: bold;', supported ? '%c✅ 支持' : '%c❌ 不支持', 'color:', supported ? 'green' : 'red');
+        });
+    </script>
+</body>
+</html>

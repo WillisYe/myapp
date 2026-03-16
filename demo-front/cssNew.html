@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS 2026 新特性演示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #2c3e50;
+        }
+
+        .feature {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #3498db;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        h3 {
+            color: #27ae60;
+            margin: 15px 0;
+        }
+
+        .demo {
+            margin: 20px 0;
+            padding: 20px;
+            background: #ecf0f1;
+            border-radius: 4px;
+        }
+
+        /* 特性1：自定义CSS函数 */
+        @function calcPadding($base, $factor) {
+            @return calc($base * $factor);
+        }
+
+        .custom-function-demo {
+            padding: calcPadding(1rem, 1.5);
+            background: #e3f2fd;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .custom-function-demo {
+                padding: calcPadding(1rem, 1);
+                background-color: cyan;
+            }
+        }
+
+        /* 特性2：border-shape属性 */
+        .shape-demo {
+            width: 200px;
+            height: 200px;
+            border-shape: shape(circle, 50%);
+            border: 4px solid #e74c3c;
+            transition: border-shape 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .shape-demo:hover {
+            border-shape: shape(rectangle, 100px 100px);
+        }
+
+        /* 特性3：attr()函数进化 */
+        .progress {
+            height: 20px;
+            background: linear-gradient(to right, attr(data-color, color) 0%, transparent 100%);
+            width: attr(data-width, number)%;
+            margin: 10px 0;
+            border-radius: 10px;
+        }
+
+        /* 特性4：滚动状态查询 */
+        .scroll-container {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .scroll-content {
+            height: 600px;
+        }
+
+        .scroll-indicator {
+            position: sticky;
+            top: 0;
+            padding: 10px;
+            background: rgba(0,0,0,0.3);
+            color: white;
+            transition: background 0.3s;
+        }
+
+        @container scroll-state(stuck: top) {
+            .scroll-indicator {
+                background: rgba(0,0,0,0.7);
+            }
+        }
+
+        @container scroll-state(rolling) {
+            .scroll-indicator {
+                background: rgba(0,0,0,0.5);
+            }
+        }
+
+        /* 特性5：媒体元素伪类 */
+        .video-demo {
+            width: 400px;
+            height: 225px;
+            border: 2px solid transparent;
+            transition: border 0.3s;
+            margin: 20px 0;
+        }
+
+        .video-demo:playing {
+            border-color: #2196F3;
+        }
+
+        .video-demo:paused {
+            border-color: #9E9E9E;
+        }
+
+        /* 特性6：容器查询与:has()选择器 */
+        .container-demo {
+            width: 100%;
+            border: 2px solid #ddd;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        @container (max-width: 600px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @container (min-width: 601px) and (max-width: 992px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @container (min-width: 993px) {
+            .grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .grid-item {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .parent {
+            padding: 20px;
+            border: 2px solid #ddd;
+            margin: 20px 0;
+            transition: background 0.3s;
+        }
+
+        .parent:has(.child:checked) {
+            background: #e8f5e8;
+            border-color: #27ae60;
+        }
+
+        .code {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CSS 2026 新特性演示</h1>
+
+        <!-- 特性1：自定义CSS函数 -->
+        <div class="feature">
+            <h2>1. 自定义CSS函数</h2>
+            <p>CSS 2026引入的@function语法，允许开发者定义可复用的计算逻辑，支持参数传递、条件判断和数学运算。</p>
+
+            <h3>示例代码：</h3>
+            <div class="code">@function calcPadding($base, $factor) {
+  @return calc($base * $factor);
+}
+
+.container {
+  padding: calcPadding(1rem, 1.5);
+  @media (max-width: 768px) {
+    padding: calcPadding(1rem, 1);
+  }
+}</div>
+
+            <h3>演示效果：</h3>
+            <div class="demo">
+                <div class="custom-function-demo">
+                    这个容器使用了自定义函数计算内边距，在不同屏幕尺寸下会自动调整。
+                </div>
+            </div>
+        </div>
+
+        <!-- 特性2：border-shape属性 -->
+        <div class="feature">
+            <h2>2. border-shape属性</h2>
+            <p>通过shape()函数定义任意几何形状，支持路径定义、贝塞尔曲线和复杂多边形。</p>
+
+            <h3>示例代码：</h3>
+            <div class="code">.shape {
+  border-shape: shape(circle, 50%);
+  border-color: red;
+  transition: border-shape 0.3s;
+}
+
+.shape:hover {
+  border-shape: shape(rectangle, 100px 100px);
+}</div>
+
+            <h3>演示效果：</h3>
+            <div class="demo">
+                <div class="shape-demo">
+                    鼠标悬停查看边框形状变化
+                </div>
+            </div>
+        </div>
+
+        <!-- 特性3：attr()函数进化 -->
+        <div class="feature">
+            <h2>3. attr()函数进化</h2>
+            <p>attr()函数现在支持类型自动识别，可直接读取HTML属性值，自动识别数字、颜色、长度等类型。</p>
+
+            <h3>示例代码：</h3>
+            <div class="code">.progress {
+  height: 20px;
+  background: linear-gradient(to right, attr(data-color, color) 0%, transparent 100%);
+  width: attr(data-width, number)%;
+}</div>
+
+            <h3>演示效果：</h3>
+            <div class="demo">
+                <div class="progress" data-width="30" data-color="#4CAF50"></div>
+                <p>进度：30%</p>
+
+                <div class="progress" data-width="60" data-color="#2196F3"></div>
+                <p>进度：60%</p>
+
+                <div class="progress" data-width="90" data-color="#FF9800"></div>
+                <p>进度：90%</p>
+            </div>
+        </div>
+
+        <!-- 特性4：滚动状态查询 -->
+        <div class="feature">
+            <h2>4. 滚动状态查询</h2>
+            <p>通过@container规则查询滚动状态，可实时检测元素的滚动状态，实现动态样式调整。</p>
+
+            <h3>示例代码：</h3>
+            <div class="code">@container scroll-state(stuck: top) {
+  .nav {
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+  }
+}
+
+@container scroll-state(rolling) {
+  .scroll-indicator {
+    background: rgba(0,0,0,0.3);
+  }
+}</div>
+
+            <h3>演示效果：</h3>
+            <div class="demo">
+                <div class="scroll-container">
+                    <div class="scroll-indicator">滚动指示器 - 滚动时背景会变化</div>
+                    <div class="scroll-content">
+                        <p>滚动内容 1</p>
+                        <p>滚动内容 2</p>
+                        <p>滚动内容 3</p>
+                        <p>滚动内容 4</p>
+                        <p>滚动内容 5</p>
+                        <p>滚动内容 6</p>
+                        <p>滚动内容 7</p>
+                        <p>滚动内容 8</p>
+                        <p>滚动内容 9</p>
+                        <p>滚动内容 10</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 特性5：媒体元素伪类 -->
+        <div class="feature">
+            <h2>5. 媒体元素伪类</h2>
+            <p>新增的媒体元素伪类支持直接绑定视频播放/暂停/缓冲等状态。</p>
+
+            <h3>示例代码：</h3>
+            <div class="code">.video {
+  border: 2px solid transparent;
+  transition: border 0.3s;
+}
+
+.video:playing {
+  border-color: #2196F3;
+}
+
+.video:paused {
+  border-color: #9E9E9E;
+}</div>
+
+            <h3>演示效果：</h3>
+            <div class="demo">
+                <video class="video-demo" controls>
+                    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                    您的浏览器不支持HTML5视频。
+                </video>
+                <p>播放视频时，边框会变为蓝色；暂停时，边框会变为灰色。</p>
+            </div>
+        </div>
+
+        <!-- 特性6：容器查询与:has()选择器 -->
+        <div class="feature">
+            <h2>6. 容器查询与:has()选择器</h2>
+            <p>@container规则实现组件级自适应，:has()选择器实现父元素基于子元素状态的样式化。</p>
+
+            <h3>示例代码：</h3>
+            <div class="code">@container (max-width: 600px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@container (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.parent:has(.child:playing) {
+  background: #F5F5F5;
+}</div>
+
+            <h3>容器查询演示效果：</h3>
+            <div class="demo">
+                <div class="container-demo">
+                    <div class="grid">
+                        <div class="grid-item">项目 1</div>
+                        <div class="grid-item">项目 2</div>
+                        <div class="grid-item">项目 3</div>
+                    </div>
+                    <p>调整浏览器窗口大小，查看网格布局的变化。</p>
+                </div>
+            </div>
+
+            <h3>:has()选择器演示效果：</h3>
+            <div class="demo">
+                <div class="parent">
+                    <p>父元素 - 选中复选框时背景会变化</p>
+                    <input type="checkbox" class="child"> 选中我
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

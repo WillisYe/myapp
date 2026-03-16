@@ -9,11 +9,11 @@
   <meta name="description" content="">
   <meta name="keywords" content="">
   <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui">
-  
+
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta content="telephone=no" name="format-detection">  
+  <meta content="telephone=no" name="format-detection">
   <meta name="apple-mobile-web-app-title" content="台球8球游戏">
-  
+
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="x5-fullscreen" content="true">
 </head>
@@ -30,7 +30,7 @@
       if (!/192.168.20/.test(window.location)) return;
       if (!isMobile()) return;
       var script = document.createElement('script');
-      script.src = '//cdn.jsdelivr.net/npm/vconsole';
+      script.src = '//unpkg.com/vconsole';
       document.body.appendChild(script);
       script.onload = function () { new window.VConsole(); }
 

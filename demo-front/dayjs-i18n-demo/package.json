@@ -1,0 +1,18 @@
+{
+  "name": "dayjs-i18n-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "dayjs": "^1.11.19",
+    "unocss": "^0.58.0",
+    "alpinejs": "^3.14.0"
+  }
+}

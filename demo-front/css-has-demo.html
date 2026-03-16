@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CSS :has() 选择器 Demo（详细用法）</title>
+  <style>
+    @layer reset, base, components, demos, utilities;
+
+    @layer reset {
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { height: 100%; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", "Microsoft YaHei", sans-serif;
+        line-height: 1.6;
+        color: oklch(28% 0.03 250);
+        background: radial-gradient(1200px 600px at 15% 5%, oklch(96% 0.03 240) 0%, transparent 60%),
+                    radial-gradient(1000px 600px at 85% 10%, oklch(96% 0.03 170) 0%, transparent 60%),
+                    linear-gradient(135deg, oklch(98% 0.01 240) 0%, oklch(99% 0.01 180) 100%);
+      }
+      a { color: inherit; }
+      code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+      button, input, select { font: inherit; }
+    }
+
+    @layer base {
+      .container { max-width: 1100px; margin: 0 auto; padding: 28px; }
+      header { margin-bottom: 18px; }
+      h1 {
+        font-size: clamp(2rem, 3.8vw, 3rem);
+        letter-spacing: -0.02em;
+        background: linear-gradient(135deg, oklch(56% 0.16 250), oklch(66% 0.12 170));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      h2 { font-size: 1.35rem; margin-bottom: 12px; color: oklch(32% 0.06 250); text-wrap: balance; }
+      h3 { font-size: 1.1rem; margin: 16px 0 10px; color: oklch(38% 0.08 250); }
+      p { margin: 8px 0; }
+      section {
+        background: white;
+        border: 1px solid oklch(92% 0.015 250);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.06);
+        margin: 16px 0;
+      }
+      kbd {
+        padding: 0.15rem 0.4rem;
+        border: 1px solid oklch(86% 0.02 250);
+        background: oklch(98% 0.01 250);
+        border-bottom-width: 2px;
+        border-radius: 6px;
+        font-size: 0.85em;
+      }
+    }
+
+    @layer components {
+      .subtitle { color: oklch(45% 0.03 250); font-size: 1.02rem; }
+      .meta-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 10px; }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        background: oklch(97% 0.01 250);
+        border: 1px solid oklch(90% 0.02 250);
+        border-radius: 999px;
+        font-size: 0.9rem;
+        color: oklch(35% 0.03 250);
+      }
+      .pill strong { color: oklch(28% 0.03 250); }
+      .status-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: oklch(60% 0.18 145);
+        box-shadow: 0 0 0 4px color-mix(in oklch, oklch(60% 0.18 145), white 70%);
+      }
+      .status-dot.bad {
+        background: oklch(62% 0.2 25);
+        box-shadow: 0 0 0 4px color-mix(in oklch, oklch(62% 0.2 25), white 72%);
+      }
+
+      .toc {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 10px;
+        margin-top: 14px;
+      }
+      .toc a {
+        text-decoration: none;
+        padding: 10px 12px;
+        background: oklch(98% 0.01 250);
+        border: 1px solid oklch(92% 0.015 250);
+        border-radius: 12px;
+        transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+      }
+      .toc a:hover {
+        transform: translateY(-2px);
+        border-color: oklch(82% 0.04 250);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+      }
+
+      .callout {
+        border-radius: 12px;
+        padding: 12px 14px;
+        border: 1px solid oklch(90% 0.02 250);
+        background: linear-gradient(180deg, oklch(98% 0.01 250), white);
+        display: grid;
+        gap: 6px;
+      }
+      .callout.good { border-left: 5px solid oklch(62% 0.18 145); }
+      .callout.warn { border-left: 5px solid oklch(70% 0.15 70); }
+      .callout.bad { border-left: 5px solid oklch(62% 0.2 25); }
+      .callout .title { font-weight: 700; color: oklch(30% 0.03 250); }
+      .muted { color: oklch(48% 0.02 250); }
+
+      .code-preview {
+        background: oklch(19% 0.03 250);
+        color: oklch(95% 0.01 250);
+        border-radius: 12px;
+        padding: 12px 14px;
+        overflow-x: auto;
+        margin-top: 10px;
+        border: 1px solid oklch(30% 0.02 250);
+      }
+      .code-preview code { white-space: pre; }
+
+      .demo-surface {
+        margin-top: 12px;
+        border-radius: 12px;
+        border: 1px dashed oklch(86% 0.02 250);
+        background: oklch(99% 0.005 250);
+        padding: 14px;
+      }
+
+      .btn {
+        appearance: none;
+        border: 1px solid oklch(85% 0.03 250);
+        background: white;
+        border-radius: 10px;
+        padding: 8px 12px;
+        cursor: pointer;
+        transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+      }
+      .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 20px rgba(0,0,0,.08); border-color: oklch(78% 0.05 250); }
+      .btn.primary { background: linear-gradient(135deg, oklch(62% 0.16 250), oklch(68% 0.12 170)); color: white; border-color: transparent; }
+      .btn.ghost { background: transparent; }
+
+      .row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+      .row.gap-lg { gap: 14px; }
+      .row > * { flex: 0 0 auto; }
+      .spacer { flex: 1 1 auto; }
+
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        border: 1px solid oklch(88% 0.02 250);
+        background: oklch(98% 0.01 250);
+        color: oklch(35% 0.03 250);
+      }
+      .tag.hot {
+        border-color: oklch(80% 0.08 25);
+        background: color-mix(in oklch, oklch(62% 0.2 25), white 85%);
+        color: oklch(34% 0.08 25);
+      }
+      .tag.ok {
+        border-color: oklch(80% 0.08 145);
+        background: color-mix(in oklch, oklch(62% 0.18 145), white 84%);
+        color: oklch(30% 0.06 145);
+      }
+    }
+
+    @layer demos {
+      /* 关键：:has() 是“相对选择器”，常用于“反向选择”（根据后代/子元素状态选父级或祖先） */
+
+      /* Demo 1：表单区域——只要内部有无效输入，就整体变红；全部有效则变绿 */
+      .form-card {
+        border-radius: 14px;
+        padding: 14px;
+        background: white;
+        border: 1px solid oklch(90% 0.02 250);
+        display: grid;
+        gap: 10px;
+        transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+      }
+      .form-card label { display: grid; gap: 6px; font-weight: 600; color: oklch(35% 0.03 250); }
+      .form-card input {
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid oklch(85% 0.02 250);
+        outline: none;
+      }
+      .form-card input:focus { border-color: oklch(70% 0.09 250); box-shadow: 0 0 0 4px color-mix(in oklch, oklch(70% 0.09 250), white 75%); }
+      .form-card .hint { font-size: 0.9rem; color: oklch(50% 0.02 250); }
+
+      @supports selector(:has(*)) {
+        .form-card:has(:invalid) {
+          border-color: oklch(75% 0.14 25);
+          box-shadow: 0 14px 30px rgba(230, 80, 60, 0.12);
+        }
+        .form-card:has(:invalid) .hint::before { content: "⚠ "; }
+
+        .form-card:not(:has(:invalid)):has(:valid) {
+          border-color: oklch(72% 0.12 145);
+          box-shadow: 0 14px 30px rgba(40, 180, 120, 0.12);
+        }
+        .form-card:not(:has(:invalid)):has(:valid) .hint::before { content: "✅ "; }
+      }
+
+      /* Demo 2：卡片列表——只要卡片里出现 .tag.hot，就强调该卡片 */
+      .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+      .card {
+        background: white;
+        border: 1px solid oklch(90% 0.02 250);
+        border-radius: 14px;
+        padding: 14px;
+        display: grid;
+        gap: 10px;
+        transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+      }
+      .card .title { font-weight: 750; color: oklch(30% 0.03 250); }
+      .card:hover { transform: translateY(-2px); box-shadow: 0 14px 34px rgba(0,0,0,0.08); }
+
+      @supports selector(:has(*)) {
+        .card:has(.tag.hot) {
+          border-color: oklch(78% 0.1 25);
+          box-shadow: 0 16px 40px rgba(230, 80, 60, 0.12);
+        }
+        .card:has(.tag.hot) .title::after {
+          content: "（含 HOT 标签）";
+          font-weight: 650;
+          font-size: 0.9rem;
+          color: oklch(45% 0.08 25);
+          margin-left: 6px;
+        }
+      }
+
+      /* Demo 3：列表“联动高亮”——当某项被 hover/focus-within 时，父列表增加指示 */
+      .menu {
+        list-style: none;
+        padding: 10px;
+        border-radius: 14px;
+        border: 1px solid oklch(90% 0.02 250);
+        display: grid;
+        gap: 6px;
+        background: white;
+        transition: border-color .16s ease, box-shadow .16s ease;
+      }
+      .menu a {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        text-decoration: none;
+        border: 1px solid transparent;
+      }
+      .menu a:hover, .menu a:focus-visible {
+        outline: none;
+        border-color: oklch(84% 0.03 250);
+        background: oklch(98% 0.01 250);
+      }
+      .menu .kbd { font-size: 0.85rem; color: oklch(52% 0.02 250); }
+
+      @supports selector(:has(*)) {
+        .menu:has(a:hover), .menu:has(a:focus-visible) {
+          border-color: oklch(78% 0.06 250);
+          box-shadow: 0 14px 30px rgba(0,0,0,0.07);
+        }
+        .menu:has(a:hover)::after,
+        .menu:has(a:focus-visible)::after {
+          content: "当前有条目处于 hover / focus";
+          display: block;
+          padding: 8px 10px;
+          margin-bottom: 6px;
+          font-size: 0.9rem;
+          border-radius: 10px;
+          background: color-mix(in oklch, oklch(62% 0.16 250), white 86%);
+          color: oklch(32% 0.06 250);
+          border: 1px solid oklch(84% 0.03 250);
+        }
+      }
+
+      /* Demo 4：表格——当行内 checkbox 被选中时，高亮整行（不用 JS 往 tr 上加 class） */
+      table { width: 100%; border-collapse: separate; border-spacing: 0; overflow: hidden; border-radius: 14px; border: 1px solid oklch(90% 0.02 250); }
+      th, td { padding: 10px 12px; border-bottom: 1px solid oklch(92% 0.015 250); text-align: left; }
+      th { background: oklch(98% 0.01 250); color: oklch(35% 0.03 250); font-weight: 750; }
+      tr:last-child td { border-bottom: none; }
+      tbody tr { transition: background .14s ease; }
+      tbody tr:hover { background: oklch(99% 0.01 250); }
+
+      @supports selector(:has(*)) {
+        tbody tr:has(input[type="checkbox"]:checked) {
+          background: color-mix(in oklch, oklch(62% 0.18 145), white 90%);
+        }
+        tbody tr:has(input[type="checkbox"]:checked) td:first-child {
+          position: relative;
+        }
+        tbody tr:has(input[type="checkbox"]:checked) td:first-child::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          width: 4px;
+          border-radius: 4px;
+          background: oklch(62% 0.18 145);
+        }
+      }
+
+      /* Demo 5：组合用法——只在“有图片但没有 alt 的时候”标红（用属性存在性模拟） */
+      .figure {
+        border-radius: 14px;
+        border: 1px solid oklch(90% 0.02 250);
+        padding: 14px;
+        background: white;
+        display: grid;
+        gap: 10px;
+      }
+      .figure img { width: 100%; height: auto; border-radius: 12px; border: 1px solid oklch(92% 0.015 250); }
+      .figure .caption { color: oklch(48% 0.02 250); }
+
+      @supports selector(:has(*)) {
+        /* 注意：HTML 层面 alt 为空字符串仍算“存在”，这里只做 demo：通过 data-alt 模拟“缺少描述” */
+        .figure:has(img[data-alt="missing"]) {
+          border-color: oklch(78% 0.1 25);
+          box-shadow: 0 16px 40px rgba(230, 80, 60, 0.12);
+        }
+        .figure:has(img[data-alt="missing"]) .caption::before {
+          content: "⚠ 建议补充图片描述：";
+          font-weight: 700;
+          color: oklch(42% 0.08 25);
+          margin-right: 6px;
+        }
+      }
+    }
+
+    @layer utilities {
+      .grid-2 { display: grid; grid-template-columns: 1fr; gap: 12px; }
+      @media (min-width: 900px) { .grid-2 { grid-template-columns: 1fr 1fr; align-items: start; } }
+      .right { text-align: right; }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>CSS `:has()` 选择器 Demo</h1>
+      <p class="subtitle">把它理解为“父级/祖先的条件判断”：当内部出现某个元素或状态时，外层就能换样式。</p>
+      <div class="meta-row">
+        <span class="pill"><span class="status-dot" id="supportDot" aria-hidden="true"></span><strong>支持情况</strong><span class="muted" id="supportText">检测中…</span></span>
+        <span class="pill"><strong>定位</strong><span class="muted">渐进增强 / 反向选择 / 交互联动</span></span>
+        <span class="pill"><strong>快捷键</strong><span class="muted">用 <kbd>Tab</kbd> 聚焦菜单项体验 focus 示例</span></span>
+      </div>
+      <nav class="toc" aria-label="目录">
+        <a href="#intro">概念与语法速览</a>
+        <a href="#demo-form">示例 1：表单整体验证</a>
+        <a href="#demo-cards">示例 2：卡片“含某元素即高亮”</a>
+        <a href="#demo-menu">示例 3：hover/focus 联动父级</a>
+        <a href="#demo-table">示例 4：表格行选中高亮</a>
+        <a href="#demo-combo">示例 5：组合选择与约束</a>
+        <a href="#tips">最佳实践与降级</a>
+      </nav>
+    </header>
+
+    <section id="intro">
+      <h2>概念与语法速览</h2>
+      <div class="grid-2">
+        <div class="callout good">
+          <div class="title">`:has()` 是什么？</div>
+          <div class="muted">它让你可以“根据后代/子元素是否存在（或处于某状态）来选择当前元素”。最常见用途：选中父级（以前只能靠 JS）。</div>
+        </div>
+        <div class="callout warn">
+          <div class="title">记住一句话</div>
+          <div class="muted">把 `E:has(S)` 当成“<strong>E 里面存在符合 S 的元素</strong>”。其中 S 是一个<strong>相对选择器列表</strong>，可以包含 `> + ~`、伪类等。</div>
+        </div>
+      </div>
+
+      <div class="code-preview" aria-label="语法示例代码">
+        <code>/* 1) 选择“包含某后代”的元素 */
+.card:has(.tag.hot) { outline: 2px solid red; }
+
+/* 2) 选择“其直接子元素满足条件”的元素 */
+.list:has(> li.selected) { border-color: green; }
+
+/* 3) 交互联动：父级根据内部 hover/focus 状态改变 */
+.menu:has(a:hover) { box-shadow: 0 10px 30px rgba(0,0,0,.12); }
+
+/* 4) 表单：只要内部出现无效字段，就整体警告 */
+form:has(:invalid) { border-color: orange; }
+
+/* 5) 渐进增强（推荐） */
+@supports selector(:has(*)) {
+  /* 把 :has() 相关样式包在 supports 里 */
+}</code>
+      </div>
+
+      <div class="callout bad" id="noSupportCallout" hidden>
+        <div class="title">你的浏览器似乎不支持 `:has()`</div>
+        <div class="muted">本页仍会展示结构与代码，但“父级跟随子级状态变化”的视觉效果可能看不到。建议换 Chrome / Edge / Safari 新版本，或看下方“降级方案”。</div>
+      </div>
+    </section>
+
+    <section id="demo-form">
+      <h2>示例 1：表单整体验证（`:has(:invalid)` / `:has(:valid)`）</h2>
+      <p class="muted">不写 JS：当表单内部出现无效输入时，外层卡片整体变“警告”；当全部有效时变“通过”。</p>
+
+      <div class="grid-2">
+        <div>
+          <div class="demo-surface">
+            <form class="form-card" id="demoForm">
+              <label>
+                邮箱（必填）
+                <input type="email" required placeholder="name@example.com" />
+              </label>
+              <label>
+                6 位数字验证码（必填）
+                <input type="text" required inputmode="numeric" pattern="\d{6}" placeholder="例如：123456" autocomplete="one-time-code" />
+              </label>
+              <div class="row">
+                <button class="btn primary" type="submit">提交（不会真的提交）</button>
+                <button class="btn" type="button" id="fillValidBtn">一键填入有效值</button>
+                <span class="spacer"></span>
+                <span class="hint" id="formHint">根据表单内部字段状态自动变色</span>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div>
+          <h3>核心 CSS</h3>
+          <div class="code-preview"><code>@supports selector(:has(*)) {
+  .form-card:has(:invalid) {
+    border-color: oklch(75% 0.14 25);
+  }
+
+  .form-card:not(:has(:invalid)):has(:valid) {
+    border-color: oklch(72% 0.12 145);
+  }
+}</code></div>
+          <p class="muted">提示：`:valid`/`:invalid` 与 `required`、`type=email`、`pattern` 等原生校验配合使用很舒服。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="demo-cards">
+      <h2>示例 2：卡片“含某元素即高亮”（`:has(.tag.hot)`）</h2>
+      <p class="muted">适合做：内容类型提示、风险标识、促销角标、包含特定子组件的布局调整等。</p>
+
+      <div class="row gap-lg">
+        <button class="btn" type="button" id="toggleHotBtn">给第 2 张卡片切换 HOT 标签</button>
+        <button class="btn ghost" type="button" id="shuffleBtn">随机打乱卡片内容</button>
+      </div>
+
+      <div class="demo-surface">
+        <div class="cards" id="cards">
+          <article class="card">
+            <div class="row">
+              <div class="title">订单 #A1024</div>
+              <span class="spacer"></span>
+              <span class="tag ok">正常</span>
+            </div>
+            <p class="muted">包含一个“正常”标签，不会触发高亮。</p>
+          </article>
+          <article class="card" id="hotCard">
+            <div class="row">
+              <div class="title">订单 #B2048</div>
+              <span class="spacer"></span>
+              <span class="tag hot" id="hotTag">HOT</span>
+            </div>
+            <p class="muted">只要卡片内部出现 `.tag.hot`，父卡片就自动强调。</p>
+          </article>
+          <article class="card">
+            <div class="row">
+              <div class="title">订单 #C4096</div>
+              <span class="spacer"></span>
+              <span class="tag">待处理</span>
+            </div>
+            <p class="muted">演示“结构不变，仅凭内部元素触发父级样式”。</p>
+          </article>
+        </div>
+      </div>
+
+      <h3>核心 CSS</h3>
+      <div class="code-preview"><code>@supports selector(:has(*)) {
+  .card:has(.tag.hot) {
+    border-color: oklch(78% 0.1 25);
+    box-shadow: 0 16px 40px rgba(230, 80, 60, 0.12);
+  }
+}</code></div>
+    </section>
+
+    <section id="demo-menu">
+      <h2>示例 3：hover / focus 联动父级（`:has(a:hover)` / `:has(a:focus-visible)`）</h2>
+      <p class="muted">这类写法可以把“子项被交互 → 父级出现提示/边框/阴影”的逻辑全部交给 CSS。</p>
+
+      <div class="grid-2">
+        <div class="demo-surface">
+          <ul class="menu">
+            <li><a href="javascript:void(0)"><span>账号设置</span><span class="kbd">Tab / Hover</span></a></li>
+            <li><a href="javascript:void(0)"><span>通知偏好</span><span class="kbd">Tab / Hover</span></a></li>
+            <li><a href="javascript:void(0)"><span>安全中心</span><span class="kbd">Tab / Hover</span></a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>核心 CSS</h3>
+          <div class="code-preview"><code>@supports selector(:has(*)) {
+  .menu:has(a:hover),
+  .menu:has(a:focus-visible) {
+    border-color: oklch(78% 0.06 250);
+  }
+}</code></div>
+          <p class="muted">小技巧：`:focus-visible` 比 `:focus` 更贴近可访问性体验（键盘导航时才显著）。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="demo-table">
+      <h2>示例 4：表格行选中高亮（`tr:has(input:checked)`）</h2>
+      <p class="muted">在表格/列表中很常见：只要行内复选框选中，就高亮整行并加左侧色条。</p>
+
+      <div class="demo-surface">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 60px;">选择</th>
+              <th>用户</th>
+              <th>状态</th>
+              <th class="right">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox" /></td>
+              <td>张三</td>
+              <td><span class="tag ok">已验证</span></td>
+              <td class="right"><button class="btn" type="button">详情</button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" checked /></td>
+              <td>李四</td>
+              <td><span class="tag hot">需关注</span></td>
+              <td class="right"><button class="btn" type="button">详情</button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" /></td>
+              <td>王五</td>
+              <td><span class="tag">待处理</span></td>
+              <td class="right"><button class="btn" type="button">详情</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>核心 CSS</h3>
+      <div class="code-preview"><code>@supports selector(:has(*)) {
+  tbody tr:has(input[type="checkbox"]:checked) {
+    background: color-mix(in oklch, oklch(62% 0.18 145), white 90%);
+  }
+}</code></div>
+    </section>
+
+    <section id="demo-combo">
+      <h2>示例 5：组合选择与约束（`:has()` + 其它选择器）</h2>
+      <p class="muted">`:has()` 经常会与 `:not()`、子代选择器 `>`、属性选择器等组合，形成“更精确的条件”。</p>
+
+      <div class="row gap-lg">
+        <button class="btn" type="button" id="toggleAltBtn">切换图片“缺少描述”状态</button>
+      </div>
+
+      <div class="grid-2">
+        <div class="demo-surface">
+          <article class="figure">
+            <img id="demoImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='700'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%236c63ff'/%3E%3Cstop offset='1' stop-color='%2328c0c7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1200' height='700' fill='url(%23g)'/%3E%3Ctext x='50%25' y='50%25' font-size='56' font-family='Arial' text-anchor='middle' fill='white' dominant-baseline='middle'%3E:has() Demo Image%3C/text%3E%3C/svg%3E"
+              alt="演示图片"
+              data-alt="ok" />
+            <div class="caption muted" id="caption">这张图当前“描述完整”。点击按钮模拟“缺少描述”。</div>
+          </article>
+        </div>
+        <div>
+          <h3>核心 CSS（组合条件）</h3>
+          <div class="code-preview"><code>@supports selector(:has(*)) {
+  /* 当 figure 里存在一个“缺少描述标记”的图片时，强调 figure */
+  .figure:has(img[data-alt="missing"]) {
+    border-color: oklch(78% 0.1 25);
+  }
+}</code></div>
+          <div class="callout warn" style="margin-top: 10px;">
+            <div class="title">关于“缺少 alt”的说明</div>
+            <div class="muted">严格意义上 CSS 不能直接判断 `alt` 为空/缺失的语义质量；本例用 `data-alt` 来模拟“质量问题”。生产中更推荐在构建/渲染阶段保证可访问性。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tips">
+      <h2>最佳实践与降级（建议直接抄用）</h2>
+
+      <div class="grid-2">
+        <div class="callout good">
+          <div class="title">推荐写法：用 `@supports selector(:has(*))` 包起来</div>
+          <div class="muted">把 `:has()` 当作“增强层”。旧浏览器走基础样式，新浏览器自动获得更强交互。</div>
+          <div class="code-preview"><code>/* 基础样式：所有浏览器都有 */
+.row { border: 1px solid #ddd; }
+
+/* 增强样式：仅在支持 :has() 时启用 */
+@supports selector(:has(*)) {
+  .row:has(input:checked) { border-color: #2ecc71; }
+}</code></div>
+        </div>
+
+        <div class="callout warn">
+          <div class="title">降级方案：极少数场景可用 JS 补一个 class</div>
+          <div class="muted">如果你必须支持不含 `:has()` 的浏览器，可以在 `@supports not selector(:has(*))` 分支里用 JS 监听并给父元素加/删 class。</div>
+          <div class="code-preview"><code>if (!CSS.supports("selector(:has(*))")) {
+  document.querySelectorAll(".row").forEach((row) =&gt; {
+    const cb = row.querySelector("input[type=checkbox]");
+    const sync = () =&gt; row.classList.toggle("is-checked", !!cb?.checked);
+    cb?.addEventListener("change", sync);
+    sync();
+  });
+}</code></div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <div class="title">性能与可维护性提醒</div>
+        <div class="muted">
+          - `:has()` 的匹配成本通常高于普通选择器，尽量把范围限制在组件根节点（例如 `.card:has(...)`），避免在 `body:has(...)` 这种大范围上做复杂条件。<br />
+          - 条件越精确越好：优先用直接子代 `:has(> ...)`，少用深层后代 `:has(.a .b .c)`。<br />
+          - 把它当作“状态联动”的工具：表单校验、行选中、局部 hover/focus 指示、含特定子组件的布局变化。
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const supportsHas = CSS.supports?.("selector(:has(*))") ?? false;
+    const dot = document.getElementById("supportDot");
+    const text = document.getElementById("supportText");
+    const noSupport = document.getElementById("noSupportCallout");
+
+    if (supportsHas) {
+      dot?.classList.remove("bad");
+      if (text) text.textContent = "当前浏览器支持 :has()";
+      if (noSupport) noSupport.hidden = true;
+    } else {
+      dot?.classList.add("bad");
+      if (text) text.textContent = "当前浏览器不支持 :has()（将只展示基础样式）";
+      if (noSupport) noSupport.hidden = false;
+    }
+
+    const demoForm = document.getElementById("demoForm");
+    demoForm?.addEventListener("submit", (e) => e.preventDefault());
+    document.getElementById("fillValidBtn")?.addEventListener("click", () => {
+      const inputs = demoForm?.querySelectorAll("input");
+      if (!inputs || inputs.length < 2) return;
+      inputs[0].value = "demo@example.com";
+      inputs[1].value = "123456";
+      inputs.forEach((i) => i.dispatchEvent(new Event("input", { bubbles: true })));
+    });
+
+    document.getElementById("toggleHotBtn")?.addEventListener("click", () => {
+      const tag = document.getElementById("hotTag");
+      if (!tag) return;
+      if (tag.isConnected) tag.remove();
+      else {
+        const host = document.getElementById("hotCard")?.querySelector(".row");
+        if (!host) return;
+        const newTag = document.createElement("span");
+        newTag.id = "hotTag";
+        newTag.className = "tag hot";
+        newTag.textContent = "HOT";
+        host.appendChild(newTag);
+      }
+    });
+
+    document.getElementById("shuffleBtn")?.addEventListener("click", () => {
+      const cards = document.getElementById("cards");
+      if (!cards) return;
+      const arr = Array.from(cards.children);
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      arr.forEach((n) => cards.appendChild(n));
+    });
+
+    document.getElementById("toggleAltBtn")?.addEventListener("click", () => {
+      const img = document.getElementById("demoImg");
+      const caption = document.getElementById("caption");
+      if (!img) return;
+      const now = img.getAttribute("data-alt") === "missing" ? "ok" : "missing";
+      img.setAttribute("data-alt", now);
+      if (caption) {
+        caption.textContent = now === "missing"
+          ? "已切换为“缺少描述”（用 data-alt 模拟）。观察外层边框/阴影变化。"
+          : "这张图当前“描述完整”。点击按钮模拟“缺少描述”。";
+      }
+    });
+
+    // 简单降级：如果不支持 :has()，演示“表格行选中高亮”用 JS 加 class（不影响支持 :has() 的浏览器）
+    if (!supportsHas) {
+      document.querySelectorAll("tbody tr").forEach((tr) => {
+        const cb = tr.querySelector('input[type="checkbox"]');
+        const sync = () => tr.classList.toggle("is-checked", !!cb?.checked);
+        cb?.addEventListener("change", sync);
+        sync();
+      });
+      const style = document.createElement("style");
+      style.textContent = `
+        tbody tr.is-checked {
+          background: #eaf8f0;
+        }
+        tbody tr.is-checked td:first-child { position: relative; }
+        tbody tr.is-checked td:first-child::before {
+          content: "";
+          position: absolute;
+          left: 0; top: 0; bottom: 0;
+          width: 4px;
+          border-radius: 4px;
+          background: #2ecc71;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  </script>
+</body>
+</html>

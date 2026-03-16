@@ -11,8 +11,8 @@
       // presets: [ ],
     }
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/@unocss/runtime"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://unpkg.com/@unocss/runtime"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <style>
     * {
       margin: 0;
@@ -121,7 +121,7 @@
         async converter(str) {
           try {
             if (!window.OpenCC) {
-              window.OpenCC = await import('https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/esm/cn2t.js'); // 等待OpenCC加载完成
+              window.OpenCC = await import('https://unpkg.com/opencc-js@1.0.5/dist/esm/cn2t.js'); // 等待 OpenCC 加载完成
             }
 
             const convertFn = window.OpenCC.Converter({ from: 'cn', to: this.conversionMode });
